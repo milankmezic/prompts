@@ -2,6 +2,8 @@
 
 # Json format
 {
+    "maincategory": "HR",
+    "subcategory": "Resume",
     "model": "gpt-3.5-turbo",
     "messages": [
         {
