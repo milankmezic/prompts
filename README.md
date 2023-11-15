@@ -1,4 +1,4 @@
-# Wekcome to GenAIPrompts.ai
+# Wekcome to Prompts
 
 # Json format
 {
