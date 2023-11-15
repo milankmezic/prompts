@@ -2,6 +2,7 @@
 
 # Json format
 {
+    "model": "gpt-3.5-turbo",
     "messages": [
         {
             "role": "system",
@@ -26,7 +27,7 @@
 
 # Python code to use prompt
 response = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo",  # You can specify the model you want to use
+    model=prompt_data['model'],
     messages=prompt_data['messages'],
     options=prompt_data['options']
 )
