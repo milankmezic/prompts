@@ -7,7 +7,7 @@
     },
     {
       "role": "user",
-      "content": "Create a professional resume based on the below job description and my resume. Job Description: [jobdescription]. Resume [resume]'"
+      "content": "Create a professional resume based on the below job description and resume. Job Description: [jobdescription]. Resume [resume]'"
     }
   ],
   "options": {
