@@ -9,31 +9,7 @@
     },
     {
       "role": "user",
-      "content": "Recommend me a job board based on the job description and include the URLs. 
-Job boards:
-Indeed: www.indeed.com - Aggregates job listings worldwide.
-Glassdoor: www.glassdoor.com - Known for company reviews and job listings.
-Monster: www.monster.com - One of the original job boards, it offers extensive job listings and company information.
-ZipRecruiter: www.ziprecruiter.com - A large job board with millions of job postings.
-CareerBuilder: www.careerbuilder.com - Offers robust search features and job matching.
-Craigslist: www.craigslist.org - Classified ads site with job listings.
-SimplyHired: www.simplyhired.com - Job search engine with filters for job type and location.
-Job.com: www.job.com - Uses AI and blockchain for job matching.
-Robert Half: www.roberthalf.com - Specializes in job listings that prioritize employee happiness.
-Google for Jobs: jobs.google.com - Leverages Google’s search capabilities to find job listings​​.
-Industry-Specific Job Boards:
-eFinancial Careers: www.efinancialcareers.com - Jobs in finance, banking, accounting, and technology.
-MarketingHire: marketinghire.com - Focuses on sales, marketing, and public relations jobs.
-Engineer.jobs: www.engineerjobs.com - Catering to engineers across various specialties.
-Engineering Central: engcen.com - North American engineering job listings.
-College Recruiter: www.collegerecruiter.com - Entry-level and graduate job listings.
-AngelList: angel.co - Start-up jobs.
-Cool Works: www.coolworks.com - Seasonal jobs in unique places.
-HealthcareJobsite: www.healthcarejobsite.com - Healthcare sector jobs.
-Flex Jobs: www.flexjobs.com - Remote and flexible jobs.
-JournalismJobs: www.journalismjobs.com - Jobs in journalism.
-K12JobSpot: www.k12jobspot.com - Education jobs for K-12 teachers​​.
-Job description: [jobdescription]"
+      "content": "Recommend me a job board based on the job description and include the URLs. Job boards: Indeed: www.indeed.com - Aggregates job listings worldwide. Glassdoor: www.glassdoor.com - Known for company reviews and job listings. Monster: www.monster.com - One of the original job boards, it offers extensive job listings and company information. ZipRecruiter: www.ziprecruiter.com - A large job board with millions of job postings. CareerBuilder: www.careerbuilder.com - Offers robust search features and job matching. Craigslist: www.craigslist.org - Classified ads site with job listings. SimplyHired: www.simplyhired.com - Job search engine with filters for job type and location. Job.com: www.job.com - Uses AI and blockchain for job matching. Robert Half: www.roberthalf.com - Specializes in job listings that prioritize employee happiness. Google for Jobs: jobs.google.com - Leverages Google’s search capabilities to find job listings​​. Industry-Specific Job Boards: eFinancial Careers: www.efinancialcareers.com - Jobs in finance, banking, accounting, and technology. MarketingHire: marketinghire.com - Focuses on sales, marketing, and public relations jobs. Engineer.jobs: www.engineerjobs.com - Catering to engineers across various specialties. Engineering Central: engcen.com - North American engineering job listings. College Recruiter: www.collegerecruiter.com - Entry-level and graduate job listings. AngelList: angel.co - Start-up jobs. Cool Works: www.coolworks.com - Seasonal jobs in unique places. HealthcareJobsite: www.healthcarejobsite.com - Healthcare sector jobs. Flex Jobs: www.flexjobs.com - Remote and flexible jobs. JournalismJobs: www.journalismjobs.com - Jobs in journalism. K12JobSpot: www.k12jobspot.com - Education jobs for K-12 teachers​​. Job description: [jobdescription]"
     }
   ],
   "options": {
