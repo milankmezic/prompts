@@ -1,4 +1,6 @@
 {
+  "maincategory": "HR",
+  "subcategory": "Job Boards",
   "model": "gpt-3.5-turbo",
   "messages": [
     {
