@@ -4,7 +4,7 @@
     "Content-Type": "application/json",
     "api-key": "YOUR_API_KEY"
   },
-  "data": {
+  "body": {
     "maincategory": "HR",
     "subcategory": "Job Boards",
     "model": "gpt-3.5-turbo",
