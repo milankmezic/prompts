@@ -1,7 +1,20 @@
-    <!-- Google Fonts Link For Icons -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
-  <body>
+
+    <!-- API Config Dialog -->
+    <div id="config-dialog" class="config-dialog">
+      <h2>API Configuration</h2>
+      <input type="text" id="api-url" placeholder="Enter API URL">
+      <br>
+      <input type="text" id="api-key" placeholder="Enter API Key">
+      <br>
+      <textarea id="configparameters" placeholder="Enter configuration parameters"></textarea>
+      <br>
+      <div id="theme-btn" class="theme-switch">Light</div>
+      <br>
+      <button id="save-config">Save</button>
+      <button id="cancel-config">Cancel</button>
+    </div>
+
     <script language="javascript">
             let userText = null;
     </script>
@@ -13,19 +26,60 @@
       <div class="typing-content">
         <div class="typing-textarea">
           <textarea id="chat-input" spellcheck="false" placeholder="Enter a prompt here" required></textarea>
-          <span id="send-btn" class="material-symbols-rounded">send</span>
+          <span id="send-btn">send</span>
         </div>
         <div class="typing-controls">
-          <span id="theme-btn" class="material-symbols-rounded">light_mode</span>
-          <span id="delete-btn" class="material-symbols-rounded">delete</span>
+          <span id="delete-btn">x</span>
+          <span id="config-btn">set</span>
       </div>
     </div>
 
   </body>
 
   <style>
-    /* Import Google font - Poppins */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+   /* API Config Dialog Styles */
+.config-dialog {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+.config-dialog h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.config-dialog label {
+  font-size: 1rem;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.config-dialog input {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+.config-dialog button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.config-dialog button:hover {
+  background-color: #0056b3;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -285,14 +339,181 @@ span.material-symbols-rounded {
   </style>
 <script language="javascript">
 
+const configDialog = document.getElementById("config-dialog");
+const apiUrlInput = document.getElementById("api-url");
+const apiKeyInput = document.getElementById("api-key");
+const configParametersTextarea = document.getElementById("configparameters"); // Add this line
+const saveConfigButton = document.getElementById("save-config");
+const cancelConfigButton = document.getElementById("cancel-config");
+const configbtn = document.getElementById("config-btn"); 
 
+// Function to close the config dialog
+const closeConfigDialog = () => {
+  configDialog.style.display = "none";
+};
+
+// Function to handle keydown events
+const handleKeydown = (event) => {
+  if (event.key === "Escape") {
+    // Close the config dialog when the "Esc" key is pressed
+    closeConfigDialog();
+  }
+};
+
+
+
+configbtn.addEventListener("click", () => {
+  // Show the configuration dialog when the Config button is clicked
+  configDialog.style.display = "block";
+  document.addEventListener("keydown", handleKeydown);
+});
+
+cancelConfigButton.addEventListener("click", () => {
+  // Hide the configuration dialog when the Cancel button is clicked
+  configDialog.style.display = "none";
+});
+
+
+// Initialize a chat history array
+let chatHistory = [];
+
+// Function to update the chat history array and save it to storage
+const updateChatHistory = (message, role) => {
+  // Push the latest message to the chat history
+  chatHistory.push({
+    role: role,
+    content: message,
+  });
+
+  // Save the updated chat history to local storage
+  localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+};
+const savedConfigParameters = localStorage.getItem("configParameters"); // Load configparameters
+const data = JSON.parse(savedConfigParameters);
+    
+
+    // Set the parameters based on the JSON structure
+    const {
+      model,
+      messages,
+      options,
+      maincategory,
+      subcategory,
+    } = data;
+
+    console.log('Model:', model);
+    console.log('Messages:', messages);
+    console.log('Options:', options);
+    console.log('Main Category:', maincategory);
+    console.log('Sub Category:', subcategory);
+
+    if(!localStorage.getItem("chatHistory")){
+      //localStorage.setItem("chatHistory", JSON.stringify(messages));
+    }
+  
+    const messagesx = messages;
+
+// Function to load chat history from storage on page load
+const loadChatHistory = () => {
+  const storedChatHistory = localStorage.getItem("chatHistory");
+  if (storedChatHistory) {
+    chatHistory = JSON.parse(storedChatHistory);
+  }
+};
+
+
+// Get the URLSearchParams object
+const urlSearchParams = new URLSearchParams(window.location.search);
+
+// Get specific query parameters
+const configfile = urlSearchParams.get('configfile');
+
+// Function to load JSON from an external URL and set parameters
+async function loadJsonAndSetParameters(url) {
+  try {
+    // Make a GET request to the external URL
+    const response = await fetch(url);
+
+    // Check if the response status is OK (200)
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    // Parse the JSON response
+    const data = await response.json();
+    //const data = JSON.parse(savedConfigParameters);
+
+    // Set the parameters based on the JSON structure
+    const {
+      model,
+      messages,
+      options,
+      maincategory,
+      subcategory,
+    } = data;
+
+    // You can access and use the parameters as needed
+    console.log('Model:', model);
+    console.log('Messages:', messages);
+    console.log('Options:', options);
+    console.log('Main Category:', maincategory);
+    console.log('Sub Category:', subcategory);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+// Usage: Call the function with the URL of the external JSON
+const externalJsonUrl = configfile;
+
+
+
+saveConfigButton.addEventListener("click", () => {
+  // Save API URL and API Key to local storage and hide the dialog
+  const apiUrl = apiUrlInput.value.trim();
+  const apiKey = apiKeyInput.value.trim();
+  const configParameters = configParametersTextarea.value; // Get the value of the configparameters textarea
+
+
+  // Check if both fields are not empty before saving
+  if (apiUrl && apiKey && configParameters) {
+    localStorage.setItem("apiUrl", apiUrl);
+    localStorage.setItem("apiKey", apiKey);
+    localStorage.setItem("configParameters", configParameters); // Save configparameters
+
+    alert("API configuration saved successfully!");
+    configDialog.style.display = "none";
+  } else {
+    alert("Please enter API URL, API Key, and configuration parameters.");
+  }
+});
+
+// Load saved API configuration on page load
+const savedApiUrl = localStorage.getItem("apiUrl");
+const savedApiKey = localStorage.getItem("apiKey");
+
+
+loadJsonAndSetParameters(externalJsonUrl);
+
+if (savedApiUrl) {
+  apiUrlInput.value = savedApiUrl;
+}
+
+if (savedApiKey) {
+  apiKeyInput.value = savedApiKey;
+}
+
+if (savedConfigParameters) {
+  configParametersTextarea.value = savedConfigParameters; // Set the value of configparameters textarea
+}
 
     const chatInput = document.querySelector("#chat-input");
     const sendButton = document.querySelector("#send-btn");
     const chatContainer = document.querySelector(".chat-container");
     const themeButton = document.querySelector("#theme-btn");
     const deleteButton = document.querySelector("#delete-btn");
-    
+    const configButton = document.querySelector("#config-btn");
+    const aiTitle = document.querySelector("#aititle-container");
 
     const API_KEY = "PASTE-YOUR-API-KEY-HERE"; // Paste your API key here
     
@@ -301,11 +522,11 @@ span.material-symbols-rounded {
         const themeColor = localStorage.getItem("themeColor");
     
         document.body.classList.toggle("light-mode", themeColor === "light_mode");
-        themeButton.innerText = document.body.classList.contains("light-mode") ? "dark_mode" : "light_mode";
-    
+        //themeButton.innerText = document.body.classList.contains("light-mode") ? "dark_mode" : "light_mode";
+        themeButton.innerText = "Light";
         const defaultText = `<div class="default-text">
-                                <h1>Offline Chat</h1>
-                                <p>Start a conversation and explore the power of AI.<br> Your chat history will be displayed here.</p>
+                                <h1><span id="aititle-container">Local AI</span></h1>
+                                <p><span id="description">All coverstations are sent directly to AI.<br>Your chat history will be displayed here.</span></p>
                             </div>`
     
         chatContainer.innerHTML = localStorage.getItem("all-chats") || defaultText;
@@ -320,52 +541,83 @@ span.material-symbols-rounded {
         return chatDiv; // Return the created chat div
     }
     
-    const getChatResponse = async (incomingChatDiv) => {
-        const API_URL = "http://localhost:1234/v1/chat/completions";
-        const pElement = document.createElement("p");
+  const getChatResponse = async (incomingChatDiv) => {
+  // Get the API URL and API Key from local storage
+  const apiUrl = localStorage.getItem("apiUrl");
+  const apiKey = localStorage.getItem("apiKey");
+  const configParameters = localStorage.getItem("configParameters");
+
+  // Check if API URL and API Key are available
+  if (!apiUrl || !apiKey || !configParameters) {
+    alert("Please configure API URL, API Key and config parameters first.");
+    return;
+  }
+
+  
+  const pElement = document.createElement("p");
+  updateChatHistory(userText, 'user');
+
+
+
+  // Iterate through the chatHistory array and add each message to messages
+  for (const chatMessage of chatHistory) {
+    messagesx.push({
+      role: chatMessage.role,
+      content: chatMessage.content
+    });
+  }
+
+  
     
-        // Define the properties and data for the API request
-        const requestOptions = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                messages: [
-                { role: 'system', content: 'You are an assistant' },
-                { role: 'user', content: userText }
-                ],
-                max_tokens: -1,
-                temperature: 0.7,
-                n: 1,
-                stop: null
-            })
-        }
+
+  // Define the properties and data for the API request
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "gpt-3.5-turbo",
+      messages: messagesx,
+      max_tokens: 2000,
+      temperature: 0.7,
+      n: 1,
+      stop: null
+    })
+  };
+
+
+const jsonObject = JSON.parse(configParameters);
+
+  // Send POST request to the configured API URL
+  try {
+
+
+    const response = await (await fetch(apiUrl, requestOptions)).json();
     
-        
-        // Send POST request to API, get response and set the reponse as paragraph element text
-        try {
-            const response = await (await fetch(API_URL, requestOptions)).json();
-            console.log(response)
-            pElement.textContent = response.choices[0].message.content.trim();
-        } catch (error) { // Add error class to the paragraph element and set error text
-            pElement.classList.add("error");
-            pElement.textContent = "Oops! Something went wrong while retrieving the response. Please try again.";
-        }
-    
-        // Remove the typing animation, append the paragraph element and save the chats to local storage
-        incomingChatDiv.querySelector(".typing-animation").remove();
-        incomingChatDiv.querySelector(".chat-details").appendChild(pElement);
-        localStorage.setItem("all-chats", chatContainer.innerHTML);
-        chatContainer.scrollTo(0, chatContainer.scrollHeight);
-    }
+    console.log(response);
+    responseText = response.choices[0].message.content.trim();
+    pElement.textContent = response.choices[0].message.content.trim();
+    updateChatHistory(responseText, 'assistant');
+  } catch (error) { // Add error class to the paragraph element and set error text
+    pElement.classList.add("error");
+    pElement.textContent = "Oops! Something went wrong while retrieving the response. Please try again.";
+  }
+
+  // Remove the typing animation, append the paragraph element, and save the chats to local storage
+  incomingChatDiv.querySelector(".typing-animation").remove();
+  incomingChatDiv.querySelector(".chat-details").appendChild(pElement);
+  localStorage.setItem("all-chats", chatContainer.innerHTML);
+  chatContainer.scrollTo(0, chatContainer.scrollHeight);
+}
     
     const copyResponse = (copyBtn) => {
         // Copy the text content of the response to the clipboard
         const reponseTextElement = copyBtn.parentElement.querySelector("p");
         navigator.clipboard.writeText(reponseTextElement.textContent);
         copyBtn.textContent = "done";
-        setTimeout(() => copyBtn.textContent = "content_copy", 1000);
+        setTimeout(() => copyBtn.textContent = "copy", 1000);
     }
     
     const showTypingAnimation = () => {
@@ -379,7 +631,7 @@ span.material-symbols-rounded {
                                 <div class="typing-dot" style="--delay: 0.4s"></div>
                             </div>
                         </div>
-                        <span onclick="copyResponse(this)" class="material-symbols-rounded">content_copy</span>
+                        <span onclick="copyResponse(this)" class="material-symbols-rounded">copy</span>
                     </div>`;
         // Create an incoming chat div with typing animation and append it to chat container
         const incomingChatDiv = createChatElement(html, "incoming");
@@ -398,7 +650,7 @@ span.material-symbols-rounded {
     
         const html = `<div class="chat-content">
                         <div class="chat-details">
-                            User
+                            You
                             <p>${userText}</p>
                         </div>
                     </div>`;
@@ -415,6 +667,7 @@ span.material-symbols-rounded {
         // Remove the chats from local storage and call loadDataFromLocalstorage function
         if(confirm("Are you sure you want to delete all the chats?")) {
             localStorage.removeItem("all-chats");
+            localStorage.removeItem("chatHistory");
             loadDataFromLocalstorage();
         }
     });
@@ -423,7 +676,8 @@ span.material-symbols-rounded {
         // Toggle body's class for the theme mode and save the updated theme to the local storage 
         document.body.classList.toggle("light-mode");
         localStorage.setItem("themeColor", themeButton.innerText);
-        themeButton.innerText = document.body.classList.contains("light-mode") ? "dark_mode" : "light_mode";
+        //themeButton.innerText = document.body.classList.contains("light-mode") ? "dark_mode" : "light_mode";
+        themeButton.innerText = "Dark";
     });
     
     const initialInputHeight = chatInput.scrollHeight;
