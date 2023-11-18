@@ -1,0 +1,20 @@
+{
+  "title": "Helpful Assistant",
+  "description": "As an assistant I help out in various tasks",
+  "maincategory": "General",
+  "subcategory": "Assistant",
+  "model": "gpt-3.5-turbo",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an helpful assistant"
+    }
+  ],
+  "options": {
+    "temperature": 0.7,
+    "max_tokens": 2000,
+    "stop": ["\n", "User:"],
+    "frequency_penalty": 0.5,
+    "presence_penalty": 0.2
+  }
+}
