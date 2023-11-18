@@ -1,11 +1,13 @@
 {
+  "title": "Find Job Board",
+  "description": "Enter job description to see all recommended job board sites",
   "maincategory": "HR",
   "subcategory": "Resume",
   "model": "gpt-3.5-turbo",
   "messages": [
     {
       "role": "system",
-      "content": "You are a professional resume creator"
+      "content": "You are a professional recruiter"
     },
     {
       "role": "user",
