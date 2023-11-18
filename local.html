@@ -1,11 +1,4 @@
-<html>
-  
-  <head>
-    <meta charset="utf-8">
-    <title>Chat</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   </head>
-  <body>
+
 
     <!-- API Config Dialog -->
     <div id="config-dialog" class="config-dialog">
@@ -410,6 +403,8 @@ const data = JSON.parse(savedConfigParameters);
 
     // Set the parameters based on the JSON structure
     const {
+      title,
+      description,
       model,
       messages,
       options,
@@ -417,6 +412,9 @@ const data = JSON.parse(savedConfigParameters);
       subcategory,
     } = data;
 
+    console.log('Title:', title);
+    console.log('Description:', description);
+   
     console.log('Model:', model);
     console.log('Messages:', messages);
     console.log('Options:', options);
@@ -461,6 +459,8 @@ async function loadJsonAndSetParameters(url) {
 
     // Set the parameters based on the JSON structure
     const {
+      title,
+      description,
       model,
       messages,
       options,
@@ -469,6 +469,8 @@ async function loadJsonAndSetParameters(url) {
     } = data;
 
     // You can access and use the parameters as needed
+    console.log('title:', title);
+    console.log('description:', description);
     console.log('Model:', model);
     console.log('Messages:', messages);
     console.log('Options:', options);
@@ -541,8 +543,8 @@ if (savedConfigParameters) {
         //themeButton.innerText = document.body.classList.contains("light-mode") ? "dark_mode" : "light_mode";
         themeButton.innerText = "Light";
         const defaultText = `<div class="default-text">
-                                <h1><span id="aititle-container">Local AI</span></h1>
-                                <p><span id="description">All coverstations are sent directly to AI.<br>Your chat history will be displayed here.</span></p>
+                                <h1><span id="aititle-container">` + title + `</span></h1>
+                                <p><span id="description">` + description + `</span></p>
                             </div>`
     
         chatContainer.innerHTML = localStorage.getItem("all-chats") || defaultText;
@@ -609,7 +611,7 @@ const jsonObject = JSON.parse(configParameters);
   // Send POST request to the configured API URL
   try {
 
-
+    console.log(requestOptions);
     const response = await (await fetch(apiUrl, requestOptions)).json();
     
     console.log(response);
@@ -717,5 +719,3 @@ const jsonObject = JSON.parse(configParameters);
     sendButton.addEventListener("click", handleOutgoingChat);
     
             </script>
-</body>
-</html>
