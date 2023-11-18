@@ -1,4 +1,6 @@
 {
+  "title": "Create Resume",
+  "description": "Creates a professional resume based on job description and you existing resume",
   "maincategory": "HR",
   "subcategory": "Resume",
   "model": "gpt-3.5-turbo",
