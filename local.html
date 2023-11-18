@@ -1,4 +1,11 @@
-
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <title>Chat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   </head>
+  <body>
 
     <!-- API Config Dialog -->
     <div id="config-dialog" class="config-dialog">
@@ -346,6 +353,11 @@ const configParametersTextarea = document.getElementById("configparameters"); //
 const saveConfigButton = document.getElementById("save-config");
 const cancelConfigButton = document.getElementById("cancel-config");
 const configbtn = document.getElementById("config-btn"); 
+// Get the URLSearchParams object
+const urlSearchParams = new URLSearchParams(window.location.search);
+
+// Get specific query parameters
+const configfile = urlSearchParams.get('configfile');
 
 // Function to close the config dialog
 const closeConfigDialog = () => {
@@ -388,8 +400,12 @@ const updateChatHistory = (message, role) => {
   // Save the updated chat history to local storage
   localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
 };
+
+
+loadJsonAndSetParameters(configfile);
 const savedConfigParameters = localStorage.getItem("configParameters"); // Load configparameters
 const data = JSON.parse(savedConfigParameters);
+//const data = JSON.parse(savedConfigParameters);
     
 
     // Set the parameters based on the JSON structure
@@ -410,7 +426,7 @@ const data = JSON.parse(savedConfigParameters);
     if(!localStorage.getItem("chatHistory")){
       //localStorage.setItem("chatHistory", JSON.stringify(messages));
     }
-  
+
     const messagesx = messages;
 
 // Function to load chat history from storage on page load
@@ -422,11 +438,7 @@ const loadChatHistory = () => {
 };
 
 
-// Get the URLSearchParams object
-const urlSearchParams = new URLSearchParams(window.location.search);
 
-// Get specific query parameters
-const configfile = urlSearchParams.get('configfile');
 
 // Function to load JSON from an external URL and set parameters
 async function loadJsonAndSetParameters(url) {
@@ -440,8 +452,12 @@ async function loadJsonAndSetParameters(url) {
     }
 
     // Parse the JSON response
-    const data = await response.json();
-    //const data = JSON.parse(savedConfigParameters);
+    const data = await response.text();
+    
+    
+    const datafetch = data;
+
+    localStorage.setItem("configParameters", datafetch); 
 
     // Set the parameters based on the JSON structure
     const {
@@ -578,7 +594,7 @@ if (savedConfigParameters) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "gpt-3.5-turbo",
+      model: model,
       messages: messagesx,
       max_tokens: 2000,
       temperature: 0.7,
@@ -701,3 +717,5 @@ const jsonObject = JSON.parse(configParameters);
     sendButton.addEventListener("click", handleOutgoingChat);
     
             </script>
+</body>
+</html>
