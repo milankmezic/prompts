@@ -1,5 +1,9 @@
+<html>
+    <header>
 
-
+    </header>
+<body>
+  
     <!-- API Config Dialog -->
     <div id="config-dialog" class="config-dialog">
       <h2>API Configuration</h2>
@@ -718,4 +722,81 @@ const jsonObject = JSON.parse(configParameters);
     loadDataFromLocalstorage();
     sendButton.addEventListener("click", handleOutgoingChat);
     
+
+  
+    
+
+    function curlToFetch(curlCommand) {
+  const fetchOptions = {};
+
+  // Extract the URL
+  const urlMatches = curlCommand.match(/--url ([^\s]+)/);
+  if (urlMatches && urlMatches.length >= 2) {
+    fetchOptions.url = urlMatches[1];
+  } else {
+    throw new Error('Invalid curl command: URL not found.');
+  }
+
+  // Extract headers
+  const headerMatches = curlCommand.match(/--header '([^']+)'/g);
+  if (headerMatches) {
+    fetchOptions.headers = {};
+    headerMatches.forEach(headerMatch => {
+      const headerParts = headerMatch.match(/--header '([^:]+): ([^']+)'/);
+      if (headerParts && headerParts.length >= 3) {
+        fetchOptions.headers[headerParts[1]] = headerParts[2];
+      }
+    });
+  }
+
+  // Extract method
+  const methodMatches = curlCommand.match(/--request ([A-Z]+)/);
+  if (methodMatches && methodMatches.length >= 2) {
+    fetchOptions.method = methodMatches[1];
+  } else {
+    fetchOptions.method = 'GET'; // Default to GET if method is not specified
+  }
+
+  // Extract data
+  const dataMatches = curlCommand.match(/--data '([^']+)'/);
+  if (dataMatches && dataMatches.length >= 2) {
+    fetchOptions.body = dataMatches[1];
+  }
+
+  return fetchOptions;
+}
+
+function curl() {
+  const itemProperty = "image"; // Specify the property name you want to access
+
+  const curlinfo = document.getElementById("curl");
+  const curlCommand = curlinfo.value.trim();
+
+  try {
+    const fetchOptions = curlToFetch(curlCommand.trim());
+    console.log(fetchOptions);
+
+    // Now you can use fetch with the fetchOptions to make the request
+    fetch(fetchOptions.url, fetchOptions)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+
+        // Extract image URLs and print them using dynamic property name
+        const imageUrls = data.output.map(item => item[itemProperty]);
+        for (let i = 0; i < imageUrls.length; i++) {
+          console.log(imageUrls[i]);
+        }
+      })
+      .catch(error => console.error(error));
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+
             </script>
+            <a href="#" onclick="curl()">curl</a>
+            <textarea id="curl" name="curl"></textarea>
+</body>
+</html>
