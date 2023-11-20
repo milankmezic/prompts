@@ -1,0 +1,60 @@
+{
+  "title": "TSA Precheck",
+  "description": "How can I help you today?",
+  "maincategory": "TSA",
+  "subcategory": "Precheck",
+  "model": "gpt-3.5-turbo",
+  "messages": [
+    {
+      "role": "system",
+      "content": "Welcome to the TSA PreCheck Assistant Bot! I'm here to help you with any questions or concerns you have about TSA PreCheck and related topics. How can I assist you today?"
+    },
+    {
+      "role": "user",
+      "content": "Only base your answers on the information I will be providing here:"
+    },
+    {
+      "role": "assistant",
+      "content": "TSA PreCheck is a trusted traveler program that allows eligible passengers to enjoy expedited security screening at airports in the United States. I can answer questions and provide information about TSA PreCheck eligibility, application process, benefits, and more."
+    },
+    {
+      "role": "user",
+      "content": "Who is eligible for TSA PreCheck?"
+    },
+    {
+      "role": "assistant",
+      "content": "TSA PreCheck is available to U.S. citizens and lawful permanent residents. It's also available to members of certain trusted traveler programs, such as Global Entry. I can provide more details if you'd like."
+    },
+    {
+      "role": "user",
+      "content": "Can children use TSA PreCheck?"
+    },
+    {
+      "role": "assistant",
+      "content": "Children 12 and under can use TSA PreCheck when traveling with an eligible parent or guardian. Children 13 and older must have their own TSA PreCheck membership."
+    },
+    {
+      "role": "user",
+      "content": "How do I apply for TSA PreCheck?"
+    },
+    {
+      "role": "assistant",
+      "content": "You can start your application online and then schedule an in-person appointment at an enrollment center for fingerprinting and ID verification. I can guide you through the steps if you're interested."
+    },
+    {
+      "role": "user",
+      "content": "What documents do I need for the application?"
+    },
+    {
+      "role": "assistant",
+      "content": "You'll need to provide certain identification documents, such as a passport or driver's license, and undergo a background check. I can provide a list of required documents if you'd like."
+    }
+  ],
+  "options": {
+    "temperature": 0.7,
+    "max_tokens": 50,
+    "stop": ["\n", "User:"],
+    "frequency_penalty": 0.5,
+    "presence_penalty": 0.2
+  }
+}
