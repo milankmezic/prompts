@@ -17,6 +17,10 @@ curl --request POST \
     "prior_steps": "5",
     "num_images": 1,
     "seed": -1
-  }
+  },
+  "outputpath": "image",
+  "title": "Kadinsky v2",
+  "description": "Runs on Runpod.ai, images temporarily stored on Cloudflare",
+  "placeholder": "Enter prompt to create image"
 }
 '
