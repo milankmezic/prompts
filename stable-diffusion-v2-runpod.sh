@@ -14,6 +14,8 @@ curl --request POST \
     "guidance_scale": 7.5,
     "scheduler": "KLMS"
   },
-  "outputpath": "image"
+  "outputpath": "image",
+  "title": "Stable Diffusion v2",
+  "description": "Runs on Runpod.ai, images temporarily stored on Cloudflare"
 }
 '
