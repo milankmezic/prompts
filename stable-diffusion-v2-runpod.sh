@@ -16,7 +16,7 @@ curl --request POST \
   },
   "outputpath": "image",
   "title": "Stable Diffusion v2",
-  "description": "Runs on Runpod.ai, images temporarily stored on Cloudflare".
+  "description": "Runs on Runpod.ai, images temporarily stored on Cloudflare",
   "placeholder": "Enter an image creation prompt"
 }
 '
