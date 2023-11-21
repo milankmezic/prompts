@@ -14,6 +14,10 @@ curl --request POST \
     "num_outputs": 1,
     "prompt_strength": 0.8,
     "scheduler": "K-LMS"
-  }
+  },
+  "outputpath": "image",
+  "title": "Open Journey",
+  "description": "Runs on Runpod.ai, images temporarily stored on Cloudflare",
+  "placeholder": "Enter prompt to create image"
 }
 '
