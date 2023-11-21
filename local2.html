@@ -1,0 +1,804 @@
+<html>
+    <header>
+
+    </header>
+<body>
+  
+    <!-- API Config Dialog -->
+    <div id="config-dialog" class="config-dialog">
+      <h2>API Configuration</h2>
+      <input type="text" id="api-url" placeholder="Enter API URL">
+      <br>
+      <input type="text" id="api-key" placeholder="Enter API Key">
+      <br>
+      <textarea id="configparameters" placeholder="Enter configuration parameters"></textarea>
+      <br>
+      <div id="theme-btn" class="theme-switch">Light</div>
+      <br>
+      <button id="save-config">Save</button>
+      <button id="cancel-config">Cancel</button>
+    </div>
+
+    <script language="javascript">
+            let userText = null;
+    </script>
+    <!-- Chats container -->
+    <div class="chat-container"></div>
+    
+    <!-- Typing container -->
+    <div class="typing-container">
+      <div class="typing-content">
+        <div class="typing-textarea">
+          <textarea id="chat-input" spellcheck="false" placeholder="Enter a prompt here" required></textarea>
+          <span id="send-btn">send</span>
+        </div>
+        <div class="typing-controls">
+          <span id="delete-btn">x</span>
+          <span id="config-btn">set</span>
+      </div>
+    </div>
+    <div id="localStorageContent" class="fixed-bottom"></div>
+
+  </body>
+
+  <style>
+
+    /* CSS for the fixed-bottom div */
+.fixed-bottom {
+  position: fixed;
+  bottom: 0;
+  height: 30%;
+  left: 0;
+  width: 100%;
+  background-color: black; /* Background color for the div */
+  padding: 10px; /* Adjust padding as needed */
+  border-top: 1px solid #cccccc; /* Optional: Add a border at the top */
+  z-index: 999; /* Optional: Set a high z-index to ensure it's above other content */
+  overflow: auto; /* Allow scrolling if content overflows */
+}
+
+   /* API Config Dialog Styles */
+.config-dialog {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+.config-dialog h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.config-dialog label {
+  font-size: 1rem;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.config-dialog input {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+.config-dialog button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.config-dialog button:hover {
+  background-color: #0056b3;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+:root {
+  --text-color: #FFFFFF;
+  --icon-color: #ACACBE;
+  --icon-hover-bg: #5b5e71;
+  --placeholder-color: #dcdcdc;
+  --outgoing-chat-bg: #343541;
+  --incoming-chat-bg: #444654;
+  --outgoing-chat-border: #343541;
+  --incoming-chat-border: #444654;
+}
+.light-mode {
+  --text-color: #343541;
+  --icon-color: #a9a9bc;
+  --icon-hover-bg: #f1f1f3;
+  --placeholder-color: #6c6c6c;
+  --outgoing-chat-bg: #FFFFFF;
+  --incoming-chat-bg: #F7F7F8;
+  --outgoing-chat-border: #FFFFFF;
+  --incoming-chat-border: #D9D9E3;
+}
+body {
+  background: var(--outgoing-chat-bg);
+}
+
+/* Chats container styling */
+.chat-container {
+  overflow-y: auto;
+  max-height: 100vh;
+  padding-bottom: 150px;
+}
+:where(.chat-container, textarea)::-webkit-scrollbar {
+  width: 6px;
+}
+:where(.chat-container, textarea)::-webkit-scrollbar-track {
+  background: var(--incoming-chat-bg);
+  border-radius: 25px;
+}
+:where(.chat-container, textarea)::-webkit-scrollbar-thumb {
+  background: var(--icon-color);
+  border-radius: 25px;
+}
+.default-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 70vh;
+  padding: 0 10px;
+  text-align: center;
+  color: var(--text-color);
+}
+.default-text h1 {
+  font-size: 3.3rem;
+}
+.default-text p {
+  margin-top: 10px;
+  font-size: 1.1rem;
+}
+.chat-container .chat {
+  padding: 25px 10px;
+  display: flex;
+  justify-content: center;
+  color: var(--text-color);
+}
+.chat-container .chat.outgoing {
+  background: var(--outgoing-chat-bg);
+  border: 1px solid var(--outgoing-chat-border);
+}
+.chat-container .chat.incoming {
+  background: var(--incoming-chat-bg);
+  border: 1px solid var(--incoming-chat-border);
+}
+.chat .chat-content {
+  display: flex;
+  max-width: 1200px;
+  width: 100%;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+span.material-symbols-rounded {
+  user-select: none;
+  cursor: pointer;
+}
+.chat .chat-content span {
+  cursor: pointer;
+  font-size: 1.3rem;
+  color: var(--icon-color);
+  visibility: hidden;
+}
+.chat:hover .chat-content:not(:has(.typing-animation), :has(.error)) span {
+  visibility: visible;
+}
+.chat .chat-details {
+  display: flex;
+  align-items: center;
+}
+.chat .chat-details img {
+  width: 35px;
+  height: 35px;
+  align-self: flex-start;
+  object-fit: cover;
+  border-radius: 2px;
+}
+.chat .chat-details p {
+  white-space: pre-wrap;
+  font-size: 1.05rem;
+  padding: 0 50px 0 25px;
+  color: var(--text-color);
+  word-break: break-word;
+}
+.chat .chat-details p.error {
+  color: #e55865;
+}
+.chat .typing-animation {
+  padding-left: 25px;
+  display: inline-flex;
+}
+.typing-animation .typing-dot {
+  height: 7px;
+  width: 7px;
+  border-radius: 50%;
+  margin: 0 3px;
+  opacity: 0.7;
+  background: var(--text-color);
+  animation: animateDots 1.5s var(--delay) ease-in-out infinite;
+}
+.typing-animation .typing-dot:first-child {
+  margin-left: 0;
+}
+@keyframes animateDots {
+  0%,44% {
+    transform: translateY(0px);
+  }
+  28% {
+    opacity: 0.4;
+    transform: translateY(-6px);
+  }
+  44% {
+    opacity: 0.2;
+  }
+}
+
+/* Typing container styling */
+.typing-container {
+  position: fixed;
+  bottom: 30%;
+  width: 100%;
+  display: flex;
+  padding: 20px 10px;
+  justify-content: center;
+  background: var(--outgoing-chat-bg);
+  border-top: 1px solid var(--incoming-chat-border);
+}
+.typing-container .typing-content {
+  display: flex;
+  max-width: 950px;
+  width: 100%;
+  align-items: flex-end;
+}
+.typing-container .typing-textarea {
+  width: 100%;
+  display: flex;
+  position: relative;
+}
+.typing-textarea textarea {
+  resize: none;
+  height: 55px;
+  width: 100%;
+  border: none;
+  padding: 15px 45px 15px 20px;
+  color: var(--text-color);
+  font-size: 1rem;
+  border-radius: 4px;
+  max-height: 250px;
+  overflow-y: auto;
+  background: var(--incoming-chat-bg);
+  outline: 1px solid var(--incoming-chat-border);
+}
+.typing-textarea textarea::placeholder {
+  color: var(--placeholder-color);
+}
+.typing-content span {
+  width: 55px;
+  height: 55px;
+  display: flex;
+  border-radius: 4px;
+  font-size: 1.35rem;
+  align-items: center;
+  justify-content: center;
+  color: var(--icon-color);
+}
+.typing-textarea span {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  visibility: hidden;
+}
+.typing-textarea textarea:valid ~ span {
+  visibility: visible;
+}
+.typing-controls {
+  display: flex;
+}
+.typing-controls span {
+  margin-left: 7px;
+  font-size: 1.4rem;
+  background: var(--incoming-chat-bg);
+  outline: 1px solid var(--incoming-chat-border);
+}
+.typing-controls span:hover {
+  background: var(--icon-hover-bg);
+}
+
+/* Reponsive Media Query */
+@media screen and (max-width: 600px) {
+  .default-text h1 {
+    font-size: 2.3rem;
+  }
+  :where(.default-text p, textarea, .chat p) {
+    font-size: 0.95rem!important;
+  }
+  .chat-container .chat {
+    padding: 20px 10px;
+  }
+  .chat-container .chat img {
+    height: 32px;
+    width: 32px;
+  }
+  .chat-container .chat p {
+    padding: 0 20px;
+  }
+  .chat .chat-content:not(:has(.typing-animation), :has(.error)) span {
+    visibility: visible;
+  }
+  .typing-container {
+    padding: 15px 10px;
+  }
+  .typing-textarea textarea {
+    height: 45px;
+    padding: 10px 40px 10px 10px;
+  }
+  .typing-content span {
+    height: 45px;
+    width: 45px;
+    margin-left: 5px;
+  }
+  span.material-symbols-rounded {
+    font-size: 1.25rem!important;
+  }
+}
+  </style>
+<script language="javascript">
+
+const configDialog = document.getElementById("config-dialog");
+const apiUrlInput = document.getElementById("api-url");
+const apiKeyInput = document.getElementById("api-key");
+const configParametersTextarea = document.getElementById("configparameters"); // Add this line
+const saveConfigButton = document.getElementById("save-config");
+const cancelConfigButton = document.getElementById("cancel-config");
+const configbtn = document.getElementById("config-btn"); 
+
+
+
+// Retrieve the data from localStorage and set it as the content of the div
+const localStorageContent = document.getElementById('localStorageContent');
+const myMediaData = localStorage.getItem("myMedia");
+if (myMediaData) {
+  localStorageContent.innerHTML = myMediaData;
+}
+
+// Get the URLSearchParams object
+const urlSearchParams = new URLSearchParams(window.location.search);
+
+// Get specific query parameters
+const configfile = urlSearchParams.get('configfile');
+
+// Function to close the config dialog
+const closeConfigDialog = () => {
+  configDialog.style.display = "none";
+};
+
+// Function to handle keydown events
+const handleKeydown = (event) => {
+  if (event.key === "Escape") {
+    // Close the config dialog when the "Esc" key is pressed
+    closeConfigDialog();
+  }
+};
+
+
+configbtn.addEventListener("click", () => {
+  // Show the configuration dialog when the Config button is clicked
+  configDialog.style.display = "block";
+  document.addEventListener("keydown", handleKeydown);
+});
+
+cancelConfigButton.addEventListener("click", () => {
+  // Hide the configuration dialog when the Cancel button is clicked
+  configDialog.style.display = "none";
+});
+
+
+// Initialize a chat history array
+let chatHistory = [];
+
+// Function to update the chat history array and save it to storage
+const updateChatHistory = (message, role) => {
+  // Push the latest message to the chat history
+  chatHistory.push({
+    role: role,
+    content: message,
+  });
+
+  // Save the updated chat history to local storage
+  localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+};
+
+loadsettingsintostorage(configfile);
+const savedConfigParameters = localStorage.getItem("configParameters"); // Load configparameters
+
+
+    if(!localStorage.getItem("chatHistory")){
+      //localStorage.setItem("chatHistory", JSON.stringify(messages));
+    }
+
+
+// Function to load chat history from storage on page load
+const loadChatHistory = () => {
+  const storedChatHistory = localStorage.getItem("chatHistory");
+  if (storedChatHistory) {
+    chatHistory = JSON.parse(storedChatHistory);
+  }
+};
+
+async function loadsettingsintostorage(url) {
+  try {
+    // Make a GET request to the external URL
+    const response = await fetch(url);
+
+    // Check if the response status is OK (200)
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.text();
+    const apiKeys = localStorage.getItem("apiKey");
+    if (!apiKeys) {
+      throw new Error('API key not found in localStorage.');
+    }
+
+    // Replace the "[apiKey]" placeholder with the actual API key
+    const datafetch = data.replace(/\[apiKey\]/g, apiKeys);
+    const curlCommand = datafetch
+
+
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+// Usage: Call the function with the URL of the external JSON
+const externalJsonUrl = configfile;
+
+
+
+saveConfigButton.addEventListener("click", () => {
+  // Save API URL and API Key to local storage and hide the dialog
+  const apiUrl = apiUrlInput.value.trim();
+  const apiKey = apiKeyInput.value.trim();
+  const configParameters = configParametersTextarea.value; // Get the value of the configparameters textarea
+
+
+  // Check if both fields are not empty before saving
+  if (apiUrl && apiKey && configParameters) {
+    localStorage.setItem("apiUrl", apiUrl);
+    localStorage.setItem("apiKey", apiKey);
+    localStorage.setItem("configParameters", configParameters); // Save configparameters
+
+    alert("API configuration saved successfully!");
+    configDialog.style.display = "none";
+  } else {
+    alert("Please enter API URL, API Key, and configuration parameters.");
+  }
+});
+
+// Load saved API configuration on page load
+const savedApiUrl = localStorage.getItem("apiUrl");
+const savedApiKey = localStorage.getItem("apiKey");
+
+if (savedApiUrl) {
+  apiUrlInput.value = savedApiUrl;
+}
+
+if (savedApiKey) {
+  apiKeyInput.value = savedApiKey;
+}
+
+if (savedConfigParameters) {
+  configParametersTextarea.value = savedConfigParameters; // Set the value of configparameters textarea
+}
+
+    const chatInput = document.querySelector("#chat-input");
+    const sendButton = document.querySelector("#send-btn");
+    const chatContainer = document.querySelector(".chat-container");
+    const themeButton = document.querySelector("#theme-btn");
+    const deleteButton = document.querySelector("#delete-btn");
+    const configButton = document.querySelector("#config-btn");
+    const aiTitle = document.querySelector("#aititle-container");
+
+    const API_KEY = "PASTE-YOUR-API-KEY-HERE"; // Paste your API key here
+    var title = 'Chat';
+    var description = 'Generative AI';
+
+    const loadDataFromLocalstorage = () => {
+        // Load saved chats and theme from local storage and apply/add on the page
+        const themeColor = localStorage.getItem("themeColor");
+    
+        document.body.classList.toggle("light-mode", themeColor === "light_mode");
+        //themeButton.innerText = document.body.classList.contains("light-mode") ? "dark_mode" : "light_mode";
+        themeButton.innerText = "Light";
+        const defaultText = `<div class="default-text">
+                                <h1><span id="aititle-container">` + title + `</span></h1>
+                                <p><span id="description">` + description + `</span></p>
+                            </div>`
+    
+        chatContainer.innerHTML = localStorage.getItem("all-chats") || defaultText;
+        chatContainer.scrollTo(0, chatContainer.scrollHeight); // Scroll to bottom of the chat container
+    }
+    
+    const createChatElement = (content, className) => {
+        // Create new div and apply chat, specified class and set html content of div
+        const chatDiv = document.createElement("div");
+        chatDiv.classList.add("chat", className);
+        chatDiv.innerHTML = content;
+        return chatDiv; // Return the created chat div
+    }
+    
+  const getChatResponse = async (incomingChatDiv) => {
+    // Get the API URL and API Key from local storage
+    const apiUrl = localStorage.getItem("apiUrl");
+    const apiKey = localStorage.getItem("apiKey");
+    const configParameters = localStorage.getItem("configParameters");
+
+    // Check if API URL and API Key are available
+    if (!apiUrl || !apiKey || !configParameters) {
+        alert("Please configure API URL, API Key and config parameters first.");
+        return;
+    }
+
+    const pElement = document.createElement("p");
+    updateChatHistory(userText, 'user');
+
+    try {
+          // Replace the "[apiKey]" placeholder with the actual API key
+    const curlCommandUpdate = configParameters.replace(/\[apiKey\]/g, apiKey);
+
+    const curlCommandFinal = curlCommandUpdate.replace(/\[prompt\]/g, userText);
+
+    var apiResponse = '';
+    var apiLink = '';
+
+    const fetchOptions = curlToFetch(curlCommandFinal);
+        console.log(fetchOptions);
+    const itemProperty = fetchOptions.outputpath; // Specify the property name you want to access
+    
+    // Now you can use fetch with the fetchOptions to make the request
+    fetch(fetchOptions.url, {
+        method: fetchOptions.method,
+        headers: fetchOptions.headers,
+        body: fetchOptions.body
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+
+        // Extract image URLs and print them using dynamic property name
+        const imageUrls = data.output.map(item => item[itemProperty]);
+        for (let i = 0; i < imageUrls.length; i++) {
+            console.log(imageUrls[i]);
+            apiResponse = apiResponse + imageUrls[i];
+        }
+        apiLink = replaceImageLinks(apiResponse);
+        let myMediaData = localStorage.getItem("myMedia");
+        apiLink = apiLink + myMediaData;
+        localStorage.setItem("myMedia", apiLink);
+        reloadLocalStorageElement();
+
+        pElement.textContent = apiResponse;
+        const responseText = pElement.textContent;
+        updateChatHistory(responseText, 'assistant');
+    })
+    .catch(error => console.error(error));
+    } catch (error) {
+        pElement.classList.add("error");
+        pElement.textContent = "Oops! Something went wrong while retrieving the response. Please try again.";
+        console.error(error.message);
+    }
+
+  // Remove the typing animation, append the paragraph element, and save the chats to local storage
+  incomingChatDiv.querySelector(".typing-animation").remove();
+  incomingChatDiv.querySelector(".chat-details").appendChild(pElement);
+  localStorage.setItem("all-chats", chatContainer.innerHTML);
+  chatContainer.scrollTo(0, chatContainer.scrollHeight);
+}
+    
+    const copyResponse = (copyBtn) => {
+        // Copy the text content of the response to the clipboard
+        const reponseTextElement = copyBtn.parentElement.querySelector("p");
+        navigator.clipboard.writeText(reponseTextElement.textContent);
+        copyBtn.textContent = "done";
+        setTimeout(() => copyBtn.textContent = "copy", 1000);
+    }
+    
+    const showTypingAnimation = () => {
+        // Display the typing animation and call the getChatResponse function
+        const html = `<div class="chat-content">
+                        <div class="chat-details">
+                            AI
+                            <div class="typing-animation">
+                                <div class="typing-dot" style="--delay: 0.2s"></div>
+                                <div class="typing-dot" style="--delay: 0.3s"></div>
+                                <div class="typing-dot" style="--delay: 0.4s"></div>
+                            </div>
+                        </div>
+                        <span onclick="copyResponse(this)" class="material-symbols-rounded">copy</span>
+                    </div>`;
+        // Create an incoming chat div with typing animation and append it to chat container
+        const incomingChatDiv = createChatElement(html, "incoming");
+        chatContainer.appendChild(incomingChatDiv);
+        chatContainer.scrollTo(0, chatContainer.scrollHeight);
+        getChatResponse(incomingChatDiv);
+    }
+    
+    const handleOutgoingChat = () => {
+        userText = chatInput.value.trim(); // Get chatInput value and remove extra spaces
+        if(!userText) return; // If chatInput is empty return from here
+    
+        // Clear the input field and reset its height
+        chatInput.value = "";
+        chatInput.style.height = `${initialInputHeight}px`;
+    
+        const html = `<div class="chat-content">
+                        <div class="chat-details">
+                            You
+                            <p>${userText}</p>
+                        </div>
+                    </div>`;
+    
+        // Create an outgoing chat div with user's message and append it to chat container
+        const outgoingChatDiv = createChatElement(html, "outgoing");
+        chatContainer.querySelector(".default-text")?.remove();
+        chatContainer.appendChild(outgoingChatDiv);
+        chatContainer.scrollTo(0, chatContainer.scrollHeight);
+        setTimeout(showTypingAnimation, 500);
+    }
+    
+    deleteButton.addEventListener("click", () => {
+        // Remove the chats from local storage and call loadDataFromLocalstorage function
+        if(confirm("Are you sure you want to delete all the chats?")) {
+            localStorage.removeItem("all-chats");
+            localStorage.removeItem("chatHistory");
+            loadDataFromLocalstorage();
+        }
+    });
+    
+    themeButton.addEventListener("click", () => {
+        // Toggle body's class for the theme mode and save the updated theme to the local storage 
+        document.body.classList.toggle("light-mode");
+        localStorage.setItem("themeColor", themeButton.innerText);
+        //themeButton.innerText = document.body.classList.contains("light-mode") ? "dark_mode" : "light_mode";
+        themeButton.innerText = "Dark";
+    });
+    
+    const initialInputHeight = chatInput.scrollHeight;
+    
+    chatInput.addEventListener("input", () => {   
+        // Adjust the height of the input field dynamically based on its content
+        chatInput.style.height =  `${initialInputHeight}px`;
+        chatInput.style.height = `${chatInput.scrollHeight}px`;
+    });
+    
+    chatInput.addEventListener("keydown", (e) => {
+        // If the Enter key is pressed without Shift and the window width is larger 
+        // than 800 pixels, handle the outgoing chat
+        if (e.key === "Enter" && !e.shiftKey && window.innerWidth > 800) {
+            e.preventDefault();
+            handleOutgoingChat();
+        }
+    });
+    
+    loadDataFromLocalstorage();
+    sendButton.addEventListener("click", handleOutgoingChat);
+    
+
+    function replaceImageLinks(responseText) {
+  // Regular expression to match URLs in the text
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+
+  // Replace URLs with HTML links and images if they contain ".png" or ".jpg" in the URL path
+  const replacedText = responseText.replace(urlRegex, (url) => {
+    if (url.toLowerCase().includes('.png') || url.toLowerCase().includes('.jpg')) {
+      // If the URL contains ".png" or ".jpg", replace it with an image tag
+      return `<a href="${url}" target="_blank"><img src="${url}" alt="Image" style="max-height:64px;" /></a>`;
+    } else {
+      // Otherwise, replace it with a regular link
+      return `<a href="${url}" target="_blank">${url}</a>`;
+    }
+  });
+
+  return replacedText;
+}
+
+function reloadLocalStorageElement() {
+  const localStorageContent = document.getElementById('localStorageContent');
+  localStorageContent.innerHTML = localStorage.getItem("myMedia");
+} 
+
+function curlToFetch(curlCommand) {
+  const fetchOptions = {};
+
+  // Extract the URL
+  const urlMatches = curlCommand.match(/(https?:\/\/[^\s]+)/);
+  if (urlMatches && urlMatches.length >= 1) {
+    fetchOptions.url = urlMatches[0];
+  } else {
+    throw new Error('Invalid curl command: URL not found.');
+  }
+
+ // Extract headers using both --header and -H
+  const headerMatches = curlCommand.match(/(--header|-H) "([^"]+): ([^"]+)"/g);
+  if (headerMatches) {
+    fetchOptions.headers = {};
+    headerMatches.forEach(headerMatch => {
+      const headerParts = headerMatch.match(/(--header|-H) "([^"]+): ([^"]+)"/);
+      if (headerParts && headerParts.length >= 4) {
+        fetchOptions.headers[headerParts[2]] = headerParts[3];
+      }
+    });
+  }
+  
+  // Extract method
+  const methodMatches = curlCommand.match(/--request ([A-Z]+)/);
+  if (methodMatches && methodMatches.length >= 2) {
+    fetchOptions.method = methodMatches[1];
+  } else {
+    fetchOptions.method = 'POST'; // Default to POST if method is not specified
+  }
+
+  // Extract data using both --data and -d
+  const dataMatches = curlCommand.match(/(--data|-d) '([^']+)'/);
+  if (dataMatches && dataMatches.length >= 3) {
+    const dataString = dataMatches[2];
+    try {
+      const jsonData = JSON.parse(dataString);
+      if (jsonData.outputpath) {
+        fetchOptions.outputpath = jsonData.outputpath; // Update to match the new field name
+      }
+      // Keep fetchOptions.body as it is
+      fetchOptions.body = dataString;
+    } catch (error) {
+      throw new Error('Invalid curl command: Error parsing JSON data.');
+    }
+  }
+
+  return fetchOptions;
+}
+
+function curl(prompt) {
+  const curlinfo = document.getElementById("curl");
+  const curlCommand = curlinfo.value.trim();
+
+  try {
+    const apiKeys = localStorage.getItem("apiKey");
+    if (!apiKeys) {
+      throw new Error('API key not found in localStorage.');
+    }
+
+    // Replace the "[apiKey]" placeholder with the actual API key
+    const curlCommandUpdate = curlCommand.replace(/\[apiKey\]/g, apiKeys);
+
+    // Replace the "[prompt]" placeholder with the value of prompt
+    const curlCommandFinal = curlCommandUpdate.replace(/\[prompt\]/g, prompt);
+
+    const fetchOptions = curlToFetch(curlCommandFinal.trim());
+    console.log(fetchOptions);
+    const itemProperty = fetchOptions.outputpath; // Specify the property name you want to access
+
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+
+            </script>
+</body>
+</html>
