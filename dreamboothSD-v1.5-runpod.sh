@@ -1,6 +1,7 @@
 curl --request POST \
      --url https://api.runpod.ai/v2/dream-booth-v1/run \
      --header 'accept: application/json' \
+     --header "authorization: [apiKey]" \
      --header 'content-type: application/json' \
      --data '
 {
