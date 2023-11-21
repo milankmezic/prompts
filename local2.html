@@ -459,7 +459,14 @@ async function loadsettingsintostorage(url) {
     // Replace the "[apiKey]" placeholder with the actual API key
     const datafetch = data.replace(/\[apiKey\]/g, apiKeys);
     const curlCommand = datafetch
+    const fetchOptions = curlToFetch(curlCommand);
+    const aiTitle = document.querySelector("#aititle-container");
+    const aiDescription = document.querySelector("#aidescription-container");
+    const chatInput = document.querySelector("#chat-input");
 
+    aiTitle.textContent  = fetchOptions.title; 
+    aiDescription.textContent = fetchOptions.description; 
+    //chatInput.placeholder = fetchOptions.placeholder;
 
   } catch (error) {
     console.error('Error:', error);
@@ -525,10 +532,10 @@ if (savedConfigParameters) {
     
         document.body.classList.toggle("light-mode", themeColor === "light_mode");
         //themeButton.innerText = document.body.classList.contains("light-mode") ? "dark_mode" : "light_mode";
-        themeButton.innerText = "Light";
+        themeButton.innerText = "Dark";
         const defaultText = `<div class="default-text">
                                 <h1><span id="aititle-container">` + title + `</span></h1>
-                                <p><span id="description">` + description + `</span></p>
+                                <p><span id="aidescription-container">` + description + `</span></p>
                             </div>`
     
         chatContainer.innerHTML = localStorage.getItem("all-chats") || defaultText;
@@ -708,7 +715,7 @@ if (savedConfigParameters) {
   const replacedText = responseText.replace(urlRegex, (url) => {
     if (url.toLowerCase().includes('.png') || url.toLowerCase().includes('.jpg')) {
       // If the URL contains ".png" or ".jpg", replace it with an image tag
-      return `<a href="${url}" target="_blank"><img src="${url}" alt="Image" style="max-height:64px;" /></a>`;
+      return `<a href="${url}" target="_blank"><img src="${url}" alt="Image" style="max-height:100%;" /></a>`;
     } else {
       // Otherwise, replace it with a regular link
       return `<a href="${url}" target="_blank">${url}</a>`;
@@ -762,6 +769,15 @@ function curlToFetch(curlCommand) {
       const jsonData = JSON.parse(dataString);
       if (jsonData.outputpath) {
         fetchOptions.outputpath = jsonData.outputpath; // Update to match the new field name
+      }
+      if (jsonData.title) {
+        fetchOptions.title = jsonData.title; // Update to match the new field name
+      }
+      if (jsonData.description) {
+        fetchOptions.description = jsonData.description; // Update to match the new field name
+      }
+      if (jsonData.placeholder) {
+        fetchOptions.placeholder = jsonData.placeholder; // Update to match the new field name
       }
       // Keep fetchOptions.body as it is
       fetchOptions.body = dataString;
