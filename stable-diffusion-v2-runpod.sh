@@ -1,8 +1,8 @@
 curl --request POST \
      --url https://api.runpod.ai/v2/stable-diffusion-v2/runsync \
-     --header 'accept: application/json' \
-     --header 'authorization: [apiKey]' \
-     --header 'content-type: application/json' \
+     --header "accept: application/json" \
+     --header "authorization: [apiKey]" \
+     --header "content-type: application/json" \
      --data '
 {
   "input": {
