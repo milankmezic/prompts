@@ -12,10 +12,10 @@ curl --request POST \
            "n": 1,
            "presence_penalty": 0.2,
            "frequency_penalty": 0.7,
-           "temperature": 0.3,
+           "temperature": 0.3
        }
      },
-  "outputpath": "image",
+  "outputpath": "text",
   "title": "LLama2 13B Chat",
   "description": "Runs on Runpod.ai",
   "placeholder": "Enter prompt to generate text"
