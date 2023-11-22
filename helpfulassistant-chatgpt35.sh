@@ -1,4 +1,4 @@
-curl -X POST -H "Authorization: Bearer YOUR_API_KEY" -H "Content-Type: application/json" -d '{
+curl -X POST -H "Authorization: Bearer [apiKey]" -H "Content-Type: application/json" -d '{
   "model": "gpt-3.5-turbo",
   "messages": [
     {"role": "system", "content": "You are a helpful assistant."},
