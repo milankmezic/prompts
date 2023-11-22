@@ -8,12 +8,5 @@ curl --request POST \
        "messages": [
          {"role": "system", "content": "You are a helpful assistant."},
          {"role": "user", "content": "[prompt]"}
-       ],
-       "options": {
-         "temperature": 0.7,
-         "max_tokens": 2000,
-         "stop": ["\n", "User:"],
-         "frequency_penalty": 0.5,
-         "presence_penalty": 0.2
-         }
+       ]
      }'
