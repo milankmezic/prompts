@@ -1,5 +1,5 @@
 {
-  "https://api.runpod.ai/v2/sdxl/runsync": {
+  "https://raw.githubusercontent.com/milankmezic/prompts/main/stable-diffusion-xl-runpod.sh": {
     "title": "Stable Diffusion XL",
     "description": "Runs on Runpod.ai, images temporarily stored on Cloudflare",
     "placeholder": "Enter prompt to create image",
@@ -7,7 +7,7 @@
     "memorywindow": 2000,
     "outputpath": "image"
   },
-  "https://api.openai.com/v1/chat/completions": {
+  "https://raw.githubusercontent.com/milankmezic/prompts/main/helpfulassistant-chatgpt35.sh": {
     "title": "Chat GPT 3.5 Turbo",
     "description": "Runs on Open.ai",
     "placeholder": "Enter prompt to Generate text",
