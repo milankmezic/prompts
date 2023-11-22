@@ -4,10 +4,6 @@ curl --request POST \
      --header 'authorization: Bearer [apiKey]' \
      --header 'content-type: application/json' \
      --data '{
-       "outputpath": "text",
-       "title": "ChatGPT 3.5 Turbo",
-       "description": "Runs on Open.ai",
-       "placeholder": "Enter prompt to generate text",
        "model": "gpt-3.5-turbo",
        "messages": [
          {"role": "system", "content": "You are a helpful assistant."},
