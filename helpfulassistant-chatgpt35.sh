@@ -1,5 +1,5 @@
 curl --request POST \
-     --url https://api.openai.com/v1/engines/gpt-3.5-turbo/completions \
+     --url https://api.openai.com/v1/chat/completions \
      --header 'accept: application/json' \
      --header 'authorization: [apiKey]' \
      --header 'content-type: application/json' \
