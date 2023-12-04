@@ -3,6 +3,9 @@
     "title": "Stable Diffusion XL",
     "description": "Runs on Runpod.ai, images temporarily stored on Cloudflare",
     "placeholder": "Enter prompt to create image",
+    "inputs": [
+      { "key": "APIapiKeyrunpod", "prompt": "Enter API Key for Runpod", "type": "text" }
+    ],
     "contextwindow": 2000,
     "memorywindow": 2000,
     "outputpath": "image"
@@ -11,6 +14,9 @@
     "title": "Chat GPT 3.5 Turbo",
     "description": "Runs on Open.ai",
     "placeholder": "Enter prompt to Generate text",
+    "inputs": [
+      { "key": "apikeychatgpt", "prompt": "Enter API Key for Chat GPT", "type": "text" }
+    ],
     "contextwindow": 2000,
     "memorywindow": 2000,
     "outputpath": "content"
