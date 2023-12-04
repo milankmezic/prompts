@@ -1,7 +1,7 @@
 curl --request POST \
      --url https://api.openai.com/v1/chat/completions \
      --header 'accept: application/json' \
-     --header 'authorization: Bearer [apiKey]' \
+     --header 'authorization: Bearer [apiKeyChatGPT]' \
      --header 'content-type: application/json' \
      --data '{
        "model": "gpt-3.5-turbo",
