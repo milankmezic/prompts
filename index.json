@@ -4,7 +4,7 @@
     "description": "Runs on Runpod.ai, images temporarily stored on Cloudflare",
     "placeholder": "Enter prompt to create image",
     "inputs": [
-      { "key": "APIapiKeyrunpod", "prompt": "Enter API Key for Runpod", "type": "text" }
+      { "key": "apiKeyRunPod", "prompt": "Enter API Key for Runpod", "type": "text" }
     ],
     "contextwindow": 2000,
     "memorywindow": 2000,
@@ -15,7 +15,7 @@
     "description": "Runs on Open.ai",
     "placeholder": "Enter prompt to Generate text",
     "inputs": [
-      { "key": "apikeychatgpt", "prompt": "Enter API Key for Chat GPT", "type": "text" }
+      { "key": "apiKeyChatGPT", "prompt": "Enter API Key for Chat GPT", "type": "text" }
     ],
     "contextwindow": 2000,
     "memorywindow": 2000,
