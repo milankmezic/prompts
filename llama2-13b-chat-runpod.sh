@@ -1,7 +1,7 @@
 curl --request POST \
      --url https://api.runpod.ai/v2/llama2-13b-chat/runsync \
      --header 'accept: application/json' \
-     --header 'authorization: [apiKey]' \
+     --header 'authorization: [apiKeyRunPod]' \
      --header 'content-type: application/json' \
      --data '
 {
