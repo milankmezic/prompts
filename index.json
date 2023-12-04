@@ -19,6 +19,6 @@
     ],
     "contextwindow": 2000,
     "memorywindow": 2000,
-    "outputpath": "content"
+    "outputpath": "choices[0].message.content"
   }
 }
