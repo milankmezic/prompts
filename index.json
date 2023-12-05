@@ -75,5 +75,16 @@
     "contextwindow": 2000,
     "memorywindow": 2000,
     "outputpath": "text"
-  } 
+  },
+  "https://raw.githubusercontent.com/milankmezic/prompts/main/models/ollama.sh": {
+    "title": "LLama 2 - Locally",
+    "description": "Runs on your local computer",
+    "placeholder": "Enter prompt to Generate speech",
+    "inputs": [
+      { "key": "apiKeyChatGPT", "prompt": "Enter API Key for Chat GPT", "type": "text" }
+    ],
+    "contextwindow": 2000,
+    "memorywindow": 2000,
+    "outputpath": "text"
+  }
 }
