@@ -1,7 +1,7 @@
 curl --request POST \
      --url https://api.runpod.ai/v2/sdxl/runsync \
      --header 'accept: application/json' \
-     --header 'authorization: [apiKeyRunPod]' \
+     --header 'authorization: apiKeyRunPod' \
      --header 'content-type: application/json' \
      --data '
 {
@@ -15,10 +15,6 @@ curl --request POST \
     "strength": 0.3,
     "seed": null,
     "num_images": 1
-  },
-  "outputpath": "image",
-  "title": "Stable Diffusion XL",
-  "description": "Runs on Runpod.ai, images temporarily stored on Cloudflare",
-  "placeholder": "Enter prompt to create image"
+  }
 }
 '
