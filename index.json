@@ -31,5 +31,16 @@
     "contextwindow": 2000,
     "memorywindow": 2000,
     "outputpath": "text"
+  },
+  "https://raw.githubusercontent.com/milankmezic/prompts/main/models/pygmalion-6b.sh": {
+    "title": "Pygmalion 6B",
+    "description": "Runs on Runpod.ai",
+    "placeholder": "Enter prompt to Generate text",
+    "inputs": [
+      { "key": "apiKeyRunPod", "prompt": "Enter API Key for Runpod", "type": "text" }
+    ],
+    "contextwindow": 2000,
+    "memorywindow": 2000,
+    "outputpath": "text"
   }
 }
