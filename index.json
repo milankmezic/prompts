@@ -63,6 +63,6 @@
     ],
     "contextwindow": 2000,
     "memorywindow": 2000,
-    "outputpath": "url"
+    "outputpath": "content"
   }
 }
