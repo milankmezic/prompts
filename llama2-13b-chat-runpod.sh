@@ -14,10 +14,6 @@ curl --request POST \
            "frequency_penalty": 0.7,
            "temperature": 0.3
        }
-     },
-  "outputpath": "text",
-  "title": "LLama2 13B Chat",
-  "description": "Runs on Runpod.ai",
-  "placeholder": "Enter prompt to generate text"
+     }
 }
 '
