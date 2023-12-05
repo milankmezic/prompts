@@ -8,7 +8,7 @@
     ],
     "contextwindow": 2000,
     "memorywindow": 2000,
-    "outputpath": "image"
+    "outputpath": "image_url"
   },
   "https://raw.githubusercontent.com/milankmezic/prompts/main/helpfulassistant-chatgpt35.sh": {
     "title": "Chat GPT 3.5 Turbo",
