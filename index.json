@@ -23,13 +23,13 @@
   },
   "https://raw.githubusercontent.com/milankmezic/prompts/main/llama2-13b-chat-runpod.sh": {
     "title": "LLama 13B Chat",
-    "description": "Runs onRunpod.ai",
+    "description": "Runs on Runpod.ai",
     "placeholder": "Enter prompt to Generate text",
     "inputs": [
       { "key": "apiKeyRunPod", "prompt": "Enter API Key for Runpod", "type": "text" }
     ],
     "contextwindow": 2000,
     "memorywindow": 2000,
-    "outputpath": "content"
+    "outputpath": "text"
   }
 }
