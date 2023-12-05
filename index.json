@@ -31,16 +31,5 @@
     "contextwindow": 2000,
     "memorywindow": 2000,
     "outputpath": "text"
-  },
-  "https://raw.githubusercontent.com/milankmezic/prompts/main/models/azureopenai.sh": {
-    "title": "Chat GPT 3.5 Azure",
-    "description": "Runs on Microsoft US Servers",
-    "placeholder": "Enter prompt to Generate text",
-    "inputs": [
-      { "key": "apiKeyAzure", "prompt": "Enter API Key for Azure Open AI", "type": "text" }
-    ],
-    "contextwindow": 2000,
-    "memorywindow": 2000,
-    "outputpath": "text"
   }
 }
