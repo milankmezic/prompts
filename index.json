@@ -31,5 +31,16 @@
     "contextwindow": 2000,
     "memorywindow": 2000,
     "outputpath": "text"
+  },
+  "https://raw.githubusercontent.com/milankmezic/prompts/main/models/dall-e3.sh": {
+    "title": "DALL-E 3",
+    "description": "Runs on Open.ai",
+    "placeholder": "Enter prompt to Generate image",
+    "inputs": [
+      { "key": "apiKeyChatGPT", "prompt": "Enter API Key for Chat GPT", "type": "text" }
+    ],
+    "contextwindow": 2000,
+    "memorywindow": 2000,
+    "outputpath": "url"
   }
 }
