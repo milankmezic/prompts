@@ -8,7 +8,7 @@ curl --request POST \
      "input": {
        "prompt": "[prompt]",
        "sampling_params": {
-           "max_tokens": 100,
+           "max_tokens": 2000,
            "n": 1,
            "presence_penalty": 0.2,
            "frequency_penalty": 0.7,
