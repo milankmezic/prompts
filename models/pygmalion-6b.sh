@@ -1,7 +1,7 @@
 curl --request POST \
      --url https://api.runpod.ai/v2/pygmalion-6b/runsync \
      --header 'accept: application/json' \
-     --header 'authorization: [apiKeyRunPod] \
+     --header 'authorization: [apiKeyRunPod]' \
      --header 'content-type: application/json' \
     --data '
      {
