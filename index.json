@@ -32,12 +32,12 @@
     "memorywindow": 2000,
     "outputpath": "text"
   },
-  "https://raw.githubusercontent.com/milankmezic/prompts/main/models/pygmalion-6b.sh": {
+  "https://raw.githubusercontent.com/milankmezic/prompts/main/models/azureopenai.sh": {
     "title": "Pygmalion 6B",
-    "description": "Runs on Runpod.ai",
+    "description": "Runs on Microsoft US Servers",
     "placeholder": "Enter prompt to Generate text",
     "inputs": [
-      { "key": "apiKeyRunPod", "prompt": "Enter API Key for Runpod", "type": "text" }
+      { "key": "apiKeyAzure", "prompt": "Enter API Key for Azure Open AI", "type": "text" }
     ],
     "contextwindow": 2000,
     "memorywindow": 2000,
