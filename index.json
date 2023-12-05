@@ -53,5 +53,16 @@
     "contextwindow": 2000,
     "memorywindow": 2000,
     "outputpath": "url"
+  },
+  "https://raw.githubusercontent.com/milankmezic/prompts/main/models/chatgpt-v4-openai.sh": {
+    "title": "Chat GPT 4 Turbo",
+    "description": "Runs on Open.ai",
+    "placeholder": "Enter prompt to Generate speech",
+    "inputs": [
+      { "key": "apiKeyChatGPT", "prompt": "Enter API Key for Chat GPT", "type": "text" }
+    ],
+    "contextwindow": 2000,
+    "memorywindow": 2000,
+    "outputpath": "url"
   }
 }
