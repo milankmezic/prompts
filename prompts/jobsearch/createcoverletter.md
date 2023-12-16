@@ -1,0 +1,1 @@
+Write a cover letter in response to the job description provided below. Use this opportunity to highlight relevant skills and experiences, demonstrate enthusiasm for the role and company, and explain why I am the ideal candidate for this position. Job description:
