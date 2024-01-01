@@ -3,9 +3,17 @@
       <title>Local Portal</title>
     </header>
 <body>
-  
+  <div id="offlineDiv" style="display: none;right:20px;top:10px;color:#ffaaaa;position:fixed;">No internet connection</div>
 
+  <!-- Bottom Tab Container -->
+  <div class="bottom-tab-container">
+    <button id="home-tab" class="tab" onclick="showContent('home')">Home</button>
+    <button id="data-tab" class="tab" onclick="showContent('data')">Data</button>
+    <button id="tools-tab" class="tab" onclick="showContent('tools')">Tools</button>
+    <button id="settings-tab" class="tab" onclick="showContent('settings')">Settings</button>
+  </div>
 
+<div id="homeContent">
     <!-- API Config Dialog -->
     <div id="config-dialog" class="config-dialog">
       <h2>API Configuration</h2>
@@ -24,8 +32,7 @@
     <script language="javascript">
             let userText = null;
     </script>
-     <div id="localStorageContent" class="fixed-bottom">This is where the contents will go</div>
-     <div id="sidebar-options" style="text-align:center"></div>
+     
     <!-- Chats container -->
     <div class="chat-container"></div>
     
@@ -41,11 +48,75 @@
           <span id="config-btn">set</span>
       </div>
     </div>
-   
+  </div>
+</div>
+<div id="toolsContent" style="display:none">
 
+
+  <div class="typing-container">
+    <div class="typing-content">
+      <div class="typing-textarea">
+        <textarea id="search-box" spellcheck="false" placeholder="Search Tools" onkeyup="filterOptions()" required=""></textarea>
+       
+      </div>
+  </div>
+</div>
+
+  <div id="sidebar-options" style="text-align:center"></div>
+</div>
+<div id="dataContent" style="display:none">
+  <div id="localStorageContent" style="width:100%;height:100%;color:white;"></div>
+</div>
+
+<div id="settingsContent" style="display:none;color:white;text-align:center">
+
+</div>
   </body>
 
-  <style>.container {
+  <style>
+
+.sidebar-option {
+  padding: 10px;
+  cursor: pointer;
+  color:white;
+}
+
+.sidebar-option:hover {
+  background-color: #5b5e71;
+}
+  
+/* Active Tab Styling */
+.tab.active {
+  background-color: transparent; /* Set background to transparent */
+  border-bottom: 2px solid white; /* Optional: add a bottom border to highlight the active tab */
+}
+
+  /* Bottom Tab Container Styling */
+.bottom-tab-container {
+  display: flex;
+  justify-content: space-around;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #000000; /* or any color you prefer */
+  color: white;
+}
+
+.tab {
+  padding: 10px 20px;
+  border: none;
+  background: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Additional spacing for the typing container */
+.typing-container {
+  margin-bottom: 40px; /* Adjust this value based on the height of your tabs */
+}
+  
+  .container {
     
     height: 100%; /* Set the container's height to 100% */
   }
@@ -387,59 +458,171 @@ span.material-symbols-rounded {
 }
   </style>
 <script language="javascript">
+
+
+function checkInternet() {
+    if (!navigator.onLine) {
+        // If offline, show the div
+        document.getElementById('offlineDiv').style.display = 'block';
+    } else {
+        // If online, hide the div
+        document.getElementById('offlineDiv').style.display = 'none';
+    }
+}
+
+// Check for Internet connection on page load
+checkInternet();
+
+// Add event listeners for the browser going online or offline
+window.addEventListener('online', checkInternet);
+window.addEventListener('offline', checkInternet);
+
+
+function filterOptions() {
+  const searchBox = document.getElementById('search-box');
+  const filter = searchBox.value.toLowerCase();
+  const data = JSON.parse(sidebarOptions.dataset.options);
+
+  // Clear existing options
+  sidebarOptions.innerHTML = '';
+
+  // Iterate and filter options based on the search input
+  for (const url in data) {
+    const config = data[url];
+    if (config.title.toLowerCase().includes(filter)) {
+      const div = document.createElement('div');
+      div.textContent = config.title;
+      div.className = 'sidebar-option';
+      div.onclick = function() {
+         // Construct the query string with additional parameters
+      const queryString = new URLSearchParams({
+        configfile: url,
+        title: config.title,
+        description: config.description,
+        placeholder: config.placeholder
+      }).toString();
+
+      // Navigate to the new URL with query parameters
+      window.location.href = window.location.pathname + '?' + queryString;
+      };
+      sidebarOptions.appendChild(div);
+    }
+  }
+}
+
+function showContent(tabName) {
+  // Hide all content
+  document.getElementById('homeContent').style.display = 'none';
+  document.getElementById('toolsContent').style.display = 'none';
+  document.getElementById('dataContent').style.display = 'none';
+  document.getElementById('settingsContent').style.display = 'none';
+
+  // Remove active class from all tabs
+  var tabs = document.getElementsByClassName('tab');
+  for (var i = 0; i < tabs.length; i++) {
+    tabs[i].classList.remove('active');
+  }
+
+  // Show the selected tab's content and add active class
+  document.getElementById(tabName + 'Content').style.display = 'block';
+  document.getElementById(tabName + '-tab').classList.add('active');
+}
+
+// Initialize with the home tab content visible
+showContent('home');
+
+
 const gridContainer = document.getElementById('grid-container');
 const sidebar = document.getElementById('sidebar');
 const sidebarOptions = document.getElementById('sidebar-options');
 
 
 function populateSidebarOptions(data) {
-  // Create the select element
-  const select = document.createElement('select');
-  select.onchange = function() {
-    // Get the selected option's configuration data
-    const selectedConfig = data[this.value];
+  // Clear existing content
+  sidebarOptions.innerHTML = '';
+  const aiTitle = document.querySelector("#aititle-container");
+    const aiDescription = document.querySelector("#aidescription-container");
 
-    // Construct the query string with additional parameters
-    const queryString = new URLSearchParams({
-      configfile: this.value,
-      title: selectedConfig.title,
-      description: selectedConfig.description,
-      placeholder: selectedConfig.placeholder
-    }).toString();
-
-    // Navigate to the new URL with query parameters
-    window.location.href = window.location.pathname + '?' + queryString;
-  };
-
-  // Add a default option
-  const defaultOption = document.createElement('option');
-  defaultOption.textContent = 'AI Models';
-  defaultOption.value = '';
-  select.appendChild(defaultOption);
-
-  // Get the current URL without query parameters and decode it
-  const currentUrl = decodeURIComponent(window.location.pathname);
-
-  // Populate the select with options
+  // Iterate through the data to create divs for each option
   for (const url in data) {
     const config = data[url];
-    const option = document.createElement('option');
-    option.textContent = config.title;
+    const div = document.createElement('div');
+    div.textContent = config.title;
+    //add title set here
+    aiTitle.textContent = config.title;
+    aiDescription.textContent = config.description;
+    //add configparameters here
+    div.className = 'sidebar-option';
+    div.onclick = function() {
+      if (config.inputs) {
+        checkAndUpdateInputs(config.inputs);
+      }
 
-    // Use just the URL part as the option value
-    option.value = url;
+       // Save outputpath to localStorage if available
+       if (config.outputpath) {
+        localStorage.setItem('outputpath', config.outputpath);
+      }
+      
+      // Construct the query string with additional parameters
+      const queryString = new URLSearchParams({
+        configfile: url,
+        title: config.title,
+        description: config.description,
+        placeholder: config.placeholder
+      }).toString();
 
-    // Check if the current URL includes the option's URL and mark it as selected if it does
-    if (window.location.href.includes(url)) {
-      option.selected = true;
-    }
+      // Navigate to the new URL with query parameters
+      window.location.href = window.location.pathname + '?' + queryString;
+    };
 
-    select.appendChild(option);
+    // Append the div to the sidebar
+    sidebarOptions.appendChild(div);
   }
-
-  // Append the select to the sidebar
-  sidebarOptions.appendChild(select);
+  sidebarOptions.dataset.options = JSON.stringify(data);
 }
+
+function extractValuesByKey(obj, key) {
+    let values = [];
+   
+    function extract(obj, key) {
+        // Check if obj is an object or array, and iterate over it
+        if (typeof obj === 'object' && obj !== null) {
+            for (const k in obj) {
+                if (k === key) {
+          
+                    // If the key matches, add the value to the array
+                    values.push(obj[k]);
+                } else if (typeof obj[k] === 'object') {
+                    // If the value is an object or array, recursively search inside it
+                    extract(obj[k], key);
+                }
+            }
+        }
+    }
+    extract(obj, key);
+    return values;
+}
+
+function checkAndUpdateInputs(inputs) {
+  const inputNames = [];
+
+  inputs.forEach(input => {
+    // Add the input key to the array
+    inputNames.push(input.key);
+
+    let storedValue = localStorage.getItem(input.key);
+    if (storedValue === null) {
+      storedValue = prompt(input.prompt);
+      if (storedValue !== null) {
+        localStorage.setItem(input.key, storedValue);
+      }
+    }
+  });
+
+  // Store the array of input names in localStorage
+  localStorage.setItem('inputNames', JSON.stringify(inputNames));
+}
+
 
 
 
@@ -538,8 +721,48 @@ const loadChatHistory = () => {
   }
 };
 
+
 async function loadsettingsintostorage(url) {
- // try {
+   
+  // Retrieve input names from localStorage
+  const inputNames = JSON.parse(localStorage.getItem('inputNames')) || [];
+
+  // Get the settingsContent div
+  const settingsContent = document.getElementById('settingsContent');
+
+  // Clear previous content
+  settingsContent.innerHTML = '';
+
+    // Create and append divs with labels and input fields
+    inputNames.forEach(inputName => {
+    // Create a container div
+    const optionDiv = document.createElement('div');
+    optionDiv.className = 'sidebar-option';
+
+    // Create a label
+    const label = document.createElement('label');
+    label.htmlFor = inputName;
+    label.textContent = inputName + ': ';
+    optionDiv.appendChild(label);
+
+    // Create an input field
+    const inputField = document.createElement('input');
+    inputField.type = 'text';
+    inputField.id = inputName;
+    inputField.value = localStorage.getItem(inputName) || '';
+
+    // Update localStorage when the input value changes
+    inputField.addEventListener('change', (event) => {
+      localStorage.setItem(inputName, event.target.value);
+    });
+
+    optionDiv.appendChild(inputField);
+
+    // Append the option div to settingsContent
+    settingsContent.appendChild(optionDiv);
+  });
+
+
     // Make a GET request to the external URL
     const response = await fetch(url);
 
@@ -549,16 +772,27 @@ async function loadsettingsintostorage(url) {
     }
 
     const data = await response.text();
-    const datamodified = data.replace(/(--header [^\n]+)/g, (match) => match.replace(/'/g, '"'));
+    let datamodified = data.replace(/(--header [^\n]+)/g, (match) => match.replace(/'/g, '"'));
 
-    const apiKeys = localStorage.getItem("apiKey");
-    if (!apiKeys) {
-      throw new Error('API key not found in localStorage.');
-    }
+
+
+
+    // Replace placeholders in datamodified with values from localStorage
+    inputNames.forEach(inputName => {
+        const inputValue = localStorage.getItem(inputName);
+        if (inputValue) {
+          datamodified = datamodified.replace(new RegExp(`\\[${inputName}\\]`, 'g'), inputValue);
+        }
+      });
+
+      localStorage.setItem("configParameters", datamodified);
 
     // Replace the "[apiKey]" placeholder with the actual API key
-    const datafetch = datamodified.replace(/\[apiKey\]/g, apiKeys);
-    const curlCommand = datafetch;
+    //const datafetch = datamodified.replace(/\[apiKey\]/g, apiKeys);
+
+
+    
+    const curlCommand = datamodified;
     const fetchOptions = curlToFetch(curlCommand);
     const aiTitle = document.querySelector("#aititle-container");
     const aiDescription = document.querySelector("#aidescription-container");
@@ -593,7 +827,7 @@ saveConfigButton.addEventListener("click", () => {
   const apiKey = apiKeyInput.value.trim();
   const configParameters = configParametersTextarea.value; // Get the value of the configparameters textarea
 
-  const datamodified = configParameters.replace(/(--header [^\n]+)/g, (match) => match.replace(/'/g, '"'));
+  let datamodified = configParameters.replace(/(--header [^\n]+)/g, (match) => match.replace(/'/g, '"'));
 
   // Check if both fields are not empty before saving
   if (apiUrl && apiKey && datamodified) {
@@ -666,20 +900,15 @@ if (savedConfigParameters) {
     const apiKey = localStorage.getItem("apiKey");
     const configParameters = localStorage.getItem("configParameters");
 
-    // Check if API URL and API Key are available
-    if (!apiUrl || !apiKey || !configParameters) {
-        alert("Please configure API URL, API Key and config parameters first.");
-        return;
-    }
 
     const pElement = document.createElement("p");
     updateChatHistory(userText, 'user');
 
     try {
           // Replace the "[apiKey]" placeholder with the actual API key
-    const curlCommandUpdate = configParameters.replace(/\[apiKey\]/g, apiKey);
+    //const curlCommandUpdate = configParameters.replace(/\[apiKey\]/g, apiKey);
 
-    const curlCommandFinal = curlCommandUpdate.replace(/\[prompt\]/g, userText);
+    const curlCommandFinal = configParameters.replace(/\[prompt\]/g, userText);
 
     var apiResponse = '';
     var apiLink = '';
@@ -690,24 +919,61 @@ if (savedConfigParameters) {
    console.log(fetchOptions.headers);
     // Now you can use fetch with the fetchOptions to make the request
     fetch(fetchOptions.url, {
-        method: fetchOptions.method,
-        headers: fetchOptions.headers,
-        body: fetchOptions.body
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);
+    method: fetchOptions.method,
+    headers: fetchOptions.headers,
+    body: fetchOptions.body
+})
+.then(response => response.json())
+.then(data => {
+    console.log(data);
 
-        // Extract image URLs and print them using dynamic property name
-        const imageUrls = data.output.map(item => item[itemProperty]);
-        for (let i = 0; i < imageUrls.length; i++) {
-            console.log(imageUrls[i]);
-            apiResponse = apiResponse + imageUrls[i];
+    // Retrieve the outputpath from localStorage
+    const outputpath = localStorage.getItem('outputpath');
+
+    // Ensure that outputpath is available and valid
+
+
+    let apiResponse = '';
+
+    // Retrieve all values matching the key 'content'
+   // Extract contents using the specified key
+    const contents = extractValuesByKey(data, outputpath);
+
+    // Iterate through each content
+    contents.forEach(content => {
+        if (Array.isArray(content)) {
+            // If content is an array, append each item
+            content.forEach(item => {
+                apiResponse += item + '\n';
+            });
+        } else {
+            // If content is not an array, append it directly
+            apiResponse += content + '\n';
         }
-        apiLink = replaceImageLinks(apiResponse);
+        console.log(content);
+    });
+
+    // Further processing as required with apiResponse
+
+
+    // Further processing of apiResponse as required
+
+
+    apiLink = replaceImageLinks(apiResponse);
+
         let myMediaData = localStorage.getItem("myMedia");
-        apiLink = apiLink + myMediaData;
+
+        // Append myMediaData only if it is not empty
+        if (myMediaData && myMediaData.trim() !== '') {
+          apiLink = '<div style="float:left;max-width:30%;height:auto;padding:10px">' + apiLink + '</div>' + myMediaData;
+        }
+        else
+        {
+          apiLink = '<div style="float:left;max-width:30%;height:auto;padding:10px">' + apiLink + '</div>';
+        }
+
         localStorage.setItem("myMedia", apiLink);
+        //showContent('data');
         reloadLocalStorageElement();
 
         pElement.textContent = apiResponse;
@@ -719,6 +985,19 @@ if (savedConfigParameters) {
         pElement.classList.add("error");
         pElement.textContent = "Oops! Something went wrong while retrieving the response. Please try again.";
         console.error(error.message);
+
+        // Extract the stack trace
+        const stack = error.stack;
+
+        // Optional: Extract the specific line number and file name from the stack trace
+        const match = stack.match(/at (.*):(\d+):(\d+)/);
+        if (match) {
+            const [, file, row, column] = match;
+            console.error(`Error occurred in file ${file} on line ${row}, column ${column}`);
+        }
+
+        // Log the full stack trace for more detailed debugging information
+        console.error("Stack trace:", stack);
     }
 
   // Remove the typing animation, append the paragraph element, and save the chats to local storage
@@ -825,7 +1104,7 @@ if (savedConfigParameters) {
   const replacedText = responseText.replace(urlRegex, (url) => {
     if (url.toLowerCase().includes('.png') || url.toLowerCase().includes('.jpg')) {
       // If the URL contains ".png" or ".jpg", replace it with an image tag
-      return `<a href="${url}" target="_blank"><img src="${url}" alt="Image" style="max-height:100%;" /></a>`;
+      return `<a href="${url}" target="_blank"><img src="${url}" alt="Image" style="max-height:100%;max-width:100%;padding:5px;" /></a>`;
     } else {
       // Otherwise, replace it with a regular link
       return `<a href="${url}" target="_blank">${url}</a>`;
@@ -836,7 +1115,6 @@ if (savedConfigParameters) {
 }
 
 function reloadLocalStorageElement() {
-  localStorageContent.style.display = '';
   const localStorageContent = document.getElementById('localStorageContent');
   localStorageContent.innerHTML = localStorage.getItem("myMedia");
 } 
@@ -905,10 +1183,6 @@ function curl(prompt) {
   const curlCommand = curlinfo.value.trim();
 
   try {
-    const apiKeys = localStorage.getItem("apiKey");
-    if (!apiKeys) {
-      throw new Error('API key not found in localStorage.');
-    }
 
     // Replace the "[apiKey]" placeholder with the actual API key
     const curlCommandUpdate = curlCommand.replace(/\[apiKey\]/g, apiKeys);
