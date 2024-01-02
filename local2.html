@@ -17,8 +17,7 @@
       <!-- Navigation items here -->
       <div class="bottom-tab-container">
         <button id="home-tab" class="tab" onclick="showContent('home');toggleMenu();">Home</button>
-        <button id="data-tab" class="tab" onclick="showContent('data')">Data</button>
-        <button id="tools-tab" class="tab" onclick="showContent('tools')">Tools</button>
+        <button id="tools-tab" class="tab" onclick="showContent('tools')">Connections</button>
         <button id="settings-tab" class="tab" onclick="showContent('settings')">Settings</button>
       </div>
   </div>
@@ -1150,7 +1149,7 @@ if (savedConfigParameters) {
   const replacedText = responseText.replace(urlRegex, (url) => {
     if (url.toLowerCase().includes('.png') || url.toLowerCase().includes('.jpg')) {
       // If the URL contains ".png" or ".jpg", replace it with an image tag
-      return `<a href="${url}" target="_blank"><img src="${url}" alt="Image" style="min-height:300px;width:auto;padding:5px;" /></a>`;
+      return `<a href="${url}" target="_blank"><img src="${url}" alt="Image" style="min-width:300px;height:auto;padding:5px;" /></a>`;
     } else {
       // Otherwise, replace it with a regular link
       return `<a href="${url}" target="_blank">${url}</a>`;
