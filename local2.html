@@ -62,13 +62,10 @@
   </div>
 </div>
 <div id="toolsContent" style="display:none">
-
-
   <div class="typing-container">
     <div class="typing-content">
       <div class="typing-textarea">
-        <textarea id="search-box" spellcheck="false" placeholder="Search Tools" onkeyup="filterOptions()" required=""></textarea>
-       
+        <textarea id="search-box" spellcheck="false" placeholder="Search Tools" onkeyup="filterOptions()" required=""></textarea> 
       </div>
   </div>
 </div>
@@ -1064,7 +1061,6 @@ if (savedConfigParameters) {
         // Display the typing animation and call the getChatResponse function
         const html = `<div class="chat-content">
                         <div class="chat-details">
-                            AI
                             <div class="typing-animation">
                                 <div class="typing-dot" style="--delay: 0.2s"></div>
                                 <div class="typing-dot" style="--delay: 0.3s"></div>
@@ -1090,7 +1086,7 @@ if (savedConfigParameters) {
     
         const html = `<div class="chat-content">
                         <div class="chat-details">
-                            You
+                             
                             <p>${userText}</p>
                         </div>
                     </div>`;
