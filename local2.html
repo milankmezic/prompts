@@ -55,7 +55,7 @@
           <textarea id="chat-input" spellcheck="false" placeholder="Enter a prompt here" required></textarea>
           <span id="send-btn">send</span>
         </div>
-        <div class="typing-controls">
+        <div class="typing-controls" style="margin-left:-20px">
           <span id="delete-btn">x</span>
       </div>
     </div>
@@ -128,7 +128,7 @@
 }
 
 .sidebar-option:hover {
-  background-color: #5b5e71;
+  background-color: #aaffaa;
 }
   
 /* Active Tab Styling */
@@ -409,12 +409,25 @@ span.material-symbols-rounded {
   display: flex;
   position: relative;
 }
+
+
+@keyframes rainbow {
+  0% { border-color: red; }
+  14% { border-color: orange; }
+  28% { border-color: rgb(255, 208, 0); }
+  42% { border-color: green; }
+  57% { border-color: blue; }
+  71% { border-color: indigo; }
+  85% { border-color: violet; }
+  100% { border-color: red; }
+}
+
 .typing-textarea textarea {
   resize: none;
   height: 55px;
   width: 100%;
   padding: 15px 45px 15px 20px;
-  border-color:#aabbff;
+  border: 1px solid #aabbff; /* Adjusted for visibility of the animation */
   color: var(--text-color);
   font-size: 1rem;
   border-radius: 4px;
@@ -422,7 +435,9 @@ span.material-symbols-rounded {
   overflow-y: auto;
   background: var(--incoming-chat-bg);
   outline: 1px solid var(--incoming-chat-border);
+  animation: rainbow 10s infinite; /* Apply the animation here */
 }
+
 .typing-textarea textarea::placeholder {
   color: var(--placeholder-color);
 }
@@ -1053,8 +1068,8 @@ if (savedConfigParameters) {
         // Copy the text content of the response to the clipboard
         const reponseTextElement = copyBtn.parentElement.querySelector("p");
         navigator.clipboard.writeText(reponseTextElement.textContent);
-        copyBtn.textContent = "done";
-        setTimeout(() => copyBtn.textContent = "copy", 1000);
+        copyBtn.textContent = " ";
+        setTimeout(() => copyBtn.textContent = "c", 1000);
     }
     
     const showTypingAnimation = () => {
