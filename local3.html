@@ -7,7 +7,10 @@
         <div id="offlineDiv" style="display: none;right:20px;top:10px;color:#ffaaaa;position:fixed;">No internet connection</div>
         <div id="timerDisplay" style="position:fixed; font-size:small;color:green;top: 20px; right: 20px;display:none"></div>
         
-
+        
+        <div style="display: flex; flex-direction: row; align-items: center; height: 50px; top: 0px; left: 0px; width: 100%; position: absolute; background: rgb(59, 129, 246); color: white; border-top-left-radius: 6px; border-top-right-radius: 6px;"><div style="flex: 1 1 0%;"><div class="chat-title" id="chat-title"></div></div><button type="button" class="py-2 px-4 justify-center font-semibold text-white focus:outline-none flex items-center disabled:opacity-50 disabled:cursor-not-allowed disabled:brightness-100 transition-all filter hover:brightness-90 active:brightness-75 chatbot-button my-2 ml-2" title="New Chat" sendbuttoncolor="white" isdisabled="false" style="background: transparent; border: none;" onclick="cleareChatHistory();"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-refresh" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="white"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"></path><path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"></path></svg></button></div>
+        <div style="margin-top:30px">&nbsp;</div>
+        <div class="chat-actions" id="chat-actions"></div>
         <div class="chat-container"></div>
         
         
@@ -27,6 +30,7 @@
     const queryParams = new URLSearchParams(window.location.search);
     const chatContainer = document.querySelector(".chat-container");
     const chatInput = document.querySelector("#chat-input");
+    const chatTitle = document.querySelector(".chat-title");
     const sendButton = document.querySelector("#send-btn");
     const configfile = queryParams.get('configfile');
     loadAndStoreConfig(configfile);
@@ -58,10 +62,12 @@
           const data = await response.text();
           let datamodified = data.replace(/(--header [^\n]+)/g, (match) => match.replace(/'/g, '"'));
           localStorage.setItem("configParameters", datamodified);
-         
+          let defaultactions = null;
+
           const designfile = configfile + ".json";
           const designresponse = await fetch(designfile);
           const designdata = await designresponse.json();
+          var actionButtons = '';
 
           for (const url in designdata) {
             const config = designdata[url];
@@ -71,6 +77,31 @@
             }
             if (config.welcome) {
               welcomeText = config.welcome;
+            }
+            
+
+            if(config.defaultactions)
+            {
+              defaultactions = config.defaultactions;
+
+              // Extracting the labels and creating buttons
+              var matches = defaultactions.match(/\[button (.*?)\]/g);
+              if (matches) {
+                  matches.forEach(function(match) {
+                      var label = match.replace('[button ', '').replace(']', ''); // Extract the label
+                      actionButtons = actionButtons + createButton(label); // Create a button with this label
+                  });
+              }
+
+
+              welcomeText = welcomeText + "<p>" + actionButtons+"</p>";
+
+            
+            if(config.title)
+            {
+              chatTitle.innerHTML = config.title;
+            }
+              
               const incomingChatDiv = createChatElement(welcomeText, "incoming");
               chatContainer.appendChild(incomingChatDiv);
               chatContainer.scrollTo(0, chatContainer.scrollHeight);
@@ -78,13 +109,33 @@
           }
     }
 
+    function setInputAndSubmit(label) {
+      // Set the value of chat-input to the label
+      document.getElementById('chat-input').value = label;
+  
+      // Call the function that handles submission (similar to clicking the send button)
+      handleOutgoingChat();
+  }
+
+    // Function to create a button and assign an alert to it
+    function createButton(label) {
+      // Create the button HTML as a string with an onclick event that sets chat-input value and calls handleOutgoingChat
+      var buttonHtml = '<input type="button" onclick="setInputAndSubmit(\'' + label + '\')" value="' + label + '" style="padding-left:5px">';
+
+  
+      return buttonHtml; // Return the button HTML string
+  }
 
     // Initialize a chat history array
     let chatHistory = [];
       // Function to update the chat history array and save it to storage
-      const cleareChatHistory = (title) => {
+      const cleareChatHistory = () => {
+        const queryParams = new URLSearchParams(window.location.search);
+        const title = queryParams.get('title'); // Get title from URL query parameters
+
         // Push the latest message to the chat history
         chatHistory = [];
+        chatContainer.innerHTML = "";
         // Save the updated chat history to local storage using the title as the key
         localStorage.setItem(title + "History", "");
       
@@ -378,6 +429,7 @@ function replaceImageLinks(responseText) {
         const seed = queryParams.get('seed'); // Get title from URL query parameters
 
         userText = chatInput.value.trim(); // Get chatInput value and remove extra spaces
+        userText = userText.charAt(0).toUpperCase() + userText.slice(1);
         if(!userText) return; // If chatInput is empty return from here
     
        
@@ -388,8 +440,7 @@ function replaceImageLinks(responseText) {
     
         if(userText=="/clear")
         {
-          cleareChatHistory(title);
-          chatContainer.innerHTML = "";
+          cleareChatHistory();
           return;
         }
 
@@ -427,6 +478,12 @@ function replaceImageLinks(responseText) {
 
 
             <style>
+              .chat-title{
+                font-weight:bold;
+                font-size:large;
+                padding:10px;
+              }
+              
 
                 /* Toggle class styles */
                 .menu-open .line:nth-child(1) {
@@ -490,6 +547,7 @@ function replaceImageLinks(responseText) {
                 
                 /* Additional spacing for the typing container */
                 .typing-container {
+                  padding-top:40px;
                   margin-bottom: 0px; /* Adjust this value based on the height of your tabs */
                 }
                   
