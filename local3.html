@@ -426,7 +426,14 @@ function replaceImageLinks(responseText) {
     const handleOutgoingChat = () => {
         const queryParams = new URLSearchParams(window.location.search);
         const title = queryParams.get('title'); // Get title from URL query parameters
-        const seed = queryParams.get('seed'); // Get title from URL query parameters
+        let seed = localStorage.getItem('seed'); // Try to get seed from localStorage
+
+        if (!seed) {
+            // Combine Date.now() with a random number to create a more unique seed
+            const randomNum = Math.floor(Math.random() * 1000000); // Generate a random number
+            seed = 'seed_' + Date.now() + '_' + randomNum;
+            localStorage.setItem('seed', seed); // Store the new seed in localStorage
+        }
 
         userText = chatInput.value.trim(); // Get chatInput value and remove extra spaces
         userText = userText.charAt(0).toUpperCase() + userText.slice(1);
