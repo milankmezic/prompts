@@ -8,7 +8,7 @@
         <div id="timerDisplay" style="position:fixed; font-size:small;color:green;top: 20px; right: 20px;display:none"></div>
         
         
-        <div style="display: flex; flex-direction: row; align-items: center; height: 50px; top: 0px; left: 0px; width: 100%; position: absolute; background: rgb(59, 129, 246); color: white; border-top-left-radius: 6px; border-top-right-radius: 6px;"><div style="flex: 1 1 0%;"><div class="chat-title" id="chat-title"></div></div><button type="button" class="py-2 px-4 justify-center font-semibold text-white focus:outline-none flex items-center disabled:opacity-50 disabled:cursor-not-allowed disabled:brightness-100 transition-all filter hover:brightness-90 active:brightness-75 chatbot-button my-2 ml-2" title="New Chat" sendbuttoncolor="white" isdisabled="false" style="background: transparent; border: none;" onclick="cleareChatHistory();"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-refresh" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="white"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"></path><path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"></path></svg></button></div>
+        <div style="padding-right:10px;display: flex; flex-direction: row; align-items: center; height: 50px; top: 0px; left: 0px; width: 100%; position: absolute; background: rgb(59, 129, 246); color: white;"><div style="flex: 1 1 0%;"><div class="chat-title" id="chat-title"></div></div><button type="button" class="py-2 px-4 justify-center font-semibold text-white focus:outline-none flex items-center disabled:opacity-50 disabled:cursor-not-allowed disabled:brightness-100 transition-all filter hover:brightness-90 active:brightness-75 chatbot-button my-2 ml-2" title="New Chat" sendbuttoncolor="white" isdisabled="false" style="background: transparent; border: none;" onclick="cleareChatHistory();"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-refresh" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="white"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"></path><path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"></path></svg></button></div>
         <div style="margin-top:30px">&nbsp;</div>
         <div class="chat-actions" id="chat-actions"></div>
         <div class="chat-container"></div>
@@ -18,7 +18,7 @@
         <div class="typing-container">
             <div class="typing-content">
                 <div class="typing-textarea">
-                    <textarea id="chat-input" spellcheck="false" required></textarea>
+                    <textarea id="chat-input" spellcheck="false" required style="background-color:white;" placeholder="Chat"></textarea>
                     <span id="send-btn" style="color:blue;">&#10147;</span>
                 </div>
             </div>
@@ -63,6 +63,7 @@
           let datamodified = data.replace(/(--header [^\n]+)/g, (match) => match.replace(/'/g, '"'));
           localStorage.setItem("configParameters", datamodified);
           let defaultactions = null;
+          let backgroundImage = null;
 
           const designfile = configfile + ".json";
           const designresponse = await fetch(designfile);
@@ -79,6 +80,29 @@
               welcomeText = config.welcome;
             }
             
+            if (config.backgroundImage) {
+              backgroundImage = config.backgroundImage;
+          
+              // Create a new div element
+              var backgroundDiv = document.createElement('div');
+          
+              // Apply styles to the div
+              backgroundDiv.style.position = 'fixed';
+              backgroundDiv.style.top = '0';
+              backgroundDiv.style.left = '0';
+              backgroundDiv.style.width = '100%';
+              backgroundDiv.style.height = '100%';
+              backgroundDiv.style.backgroundImage = "url('" + backgroundImage + "')";
+              backgroundDiv.style.backgroundSize = 'cover';
+              backgroundDiv.style.backgroundRepeat = 'no-repeat';
+              backgroundDiv.style.backgroundPosition = 'center center';
+              backgroundDiv.style.opacity = '0.1'; // 50% transparency
+              backgroundDiv.style.zIndex = '-1'; // Ensures the div is behind other content
+          
+              // Append the div to the body
+              document.body.appendChild(backgroundDiv);
+          }
+            console.log("background image"+backgroundImage)
 
             if(config.defaultactions)
             {
@@ -94,7 +118,7 @@
               }
 
 
-              welcomeText = welcomeText + "<p>" + actionButtons+"</p>";
+              //welcomeText = welcomeText + "<p>" + actionButtons+"</p>";
 
             
             if(config.title)
@@ -138,6 +162,7 @@
         chatContainer.innerHTML = "";
         // Save the updated chat history to local storage using the title as the key
         localStorage.setItem(title + "History", "");
+        localStorage.setItem("seed", "");
       
         if (welcomeText !== null ) {
           const incomingChatDiv = createChatElement(welcomeText, "incoming");
@@ -252,7 +277,9 @@ const enqueueRequest = (prompt) => {
     
 const syncfetch = (prompt) => {
   const configParameters = localStorage.getItem("configParameters");
-  const curlCommandFinal = configParameters.replace(/\[prompt\]/g, prompt);
+  let seed = localStorage.getItem('seed'); 
+  let curlCommandFinal = configParameters.replace(/\[prompt\]/g, prompt);
+  curlCommandFinal = curlCommandFinal.replace(/\[seed\]/g, seed);
   const fetchOptions = curlToFetch(curlCommandFinal);
   let apiResponse = '';
   var contents;
@@ -263,7 +290,7 @@ const syncfetch = (prompt) => {
   if (fetchOptions.outputpath) {
     localStorage.setItem('outputpath', fetchOptions.outputpath);
   }
-
+  
     // Now you can use fetch with the fetchOptions to make the request
     fetch(fetchOptions.url, {
       method: fetchOptions.method,
@@ -309,7 +336,7 @@ const syncfetch = (prompt) => {
         
       
 
-        const incomingChatDiv = createChatElement(apiResponse, "incoming");
+        const incomingChatDiv = createChatElement(apiLink, "incoming");
         chatContainer.appendChild(incomingChatDiv);
         chatContainer.scrollTo(0, chatContainer.scrollHeight);
     });
@@ -324,19 +351,50 @@ function replaceImageLinks(responseText) {
   // Regular expression to match URLs in the text
   const urlRegex = /(https?:\/\/[^\s]+)/g;
 
-  // Replace URLs with HTML links and images if they contain ".png" or ".jpg" in the URL path
-  const replacedText = responseText.replace(urlRegex, (url) => {
-    if (url.toLowerCase().includes('.png') || url.toLowerCase().includes('.jpg')) {
-      // If the URL contains ".png" or ".jpg", replace it with an image tag
-      return `<a href="${url}" target="_blank"><img src="${url}" alt="Image" style="min-width:300px;height:auto;padding:5px;" /></a>`;
-    } else {
-      // Otherwise, replace it with a regular link
-      return `<a href="${url}" target="_blank">${url}</a>`;
-    }
+  // Replace URLs with HTML links and images in the entire responseText
+  responseText = responseText.replace(urlRegex, (url) => {
+      // Extract and save any trailing punctuation
+      let trailingPunctuation = url.match(/[,.]$/) ? url.slice(-1) : '';
+      let cleanUrl = url.replace(/[,.]$/, ''); // Remove trailing punctuation from the URL
+
+      if (cleanUrl.toLowerCase().includes('.png') || cleanUrl.toLowerCase().includes('.jpg')) {
+          return `<a href="${cleanUrl}" target="_blank"><img src="${cleanUrl}" alt="Image" style="min-width:300px;height:auto;padding:5px;" /></a>${trailingPunctuation}`;
+      } else {
+          return `<a href="${cleanUrl}" target="_blank">${cleanUrl}</a>${trailingPunctuation}`;
+      }
   });
 
-  return replacedText;
+  // Find the index of the "More:" title
+  const moreIndex = responseText.indexOf("More:");
+  if (moreIndex === -1) return responseText; // If "More:" is not found, return the modified text
+
+  // Split the responseText into two parts: before and after "More:"
+  const beforeMore = responseText.substring(0, moreIndex);
+  let afterMore = responseText.substring(moreIndex);
+
+  // Regular expression to match suggestions (assuming they start with '- ' followed by text)
+  const suggestionRegex = /-\s([^\n]+)/g;
+
+  // Replace suggestions with clickable links in the 'afterMore' part
+  afterMore = afterMore.replace(suggestionRegex, (match, suggestion) => {
+      // Check if the last character of the suggestion is a comma or period
+      let lastChar = suggestion.slice(-1);
+      let displaySuggestion = suggestion;
+      let actionSuggestion = suggestion;
+
+      if (lastChar === ',' || lastChar === '.') {
+          // Remove the last character from the action part of the suggestion
+          actionSuggestion = suggestion.slice(0, -1);
+      }
+
+      return `<a href="javascript:void(0);" onclick="setInputAndSubmit('${actionSuggestion}')" style="color:blue;text-decoration:underline;">${displaySuggestion}</a>`;
+  });
+
+  // Combine the 'beforeMore' and 'afterMore' parts
+  return beforeMore + afterMore;
 }
+
+
 
     // Function to update the chat history array and save it to storage
     const updateChatHistory = (message, role, title) => {
@@ -383,9 +441,9 @@ function replaceImageLinks(responseText) {
             chatHistory.forEach(chat => {
                 // Determine the class name based on the role
                 if (chat.role != 'assistant')
-                  className = "user";
+                  className = "incoming";
                 else
-                  className = "assistant";
+                  className = "outgoing";
 
                 console.log("role"+chat.role);
                 // Create the chat element
@@ -487,7 +545,7 @@ function replaceImageLinks(responseText) {
             <style>
               .chat-title{
                 font-weight:bold;
-                font-size:large;
+                font-size:medium;
                 padding:10px;
               }
               
@@ -653,11 +711,12 @@ function replaceImageLinks(responseText) {
                   --icon-color: #ACACBE;
                   --icon-hover-bg: #5b5e71;
                   --placeholder-color: #dcdcdc;
-                  --outgoing-chat-bg:white;
-                  --incoming-chat-bg: white;
+                  --outgoing-chat-bg: rgba(240, 240, 255, 0.5); /* 50% transparent white */
+                  --incoming-chat-bg: rgba(255, 255, 255, 0.5); /* 50% transparent white */
                   --outgoing-chat-border: white;
                   --incoming-chat-border: white;
                 }
+                
                 .light-mode {
                   --text-color: #343541;
                   --icon-color: #a9a9bc;
@@ -698,8 +757,8 @@ function replaceImageLinks(responseText) {
                   width:100%;
                 }
                 .chat-container .chat {
-                  padding: 5px 10px;
-                  display: flex;
+                  padding: 15px 10px;
+                  display: block;
                   justify-content: left;
                   color: var(--text-color);
                 }
@@ -721,6 +780,11 @@ function replaceImageLinks(responseText) {
                 span.material-symbols-rounded {
                   user-select: none;
                   cursor: pointer;
+                }
+                .chat
+                {
+                  padding-top:5px;
+                  padding-bottom:5px;
                 }
                 .chat .chat-content span {
                   cursor: pointer;
@@ -789,8 +853,8 @@ function replaceImageLinks(responseText) {
                   display: flex;
                   padding: 20px 10px;
                   justify-content: center;
-                  background: var(--outgoing-chat-bg);
-                  border-top: 1px solid var(--incoming-chat-border);
+                  background: rgba(255, 255, 255, 0.1);
+                
                 }
                 .typing-container .typing-content {
                   display: flex;
@@ -856,6 +920,8 @@ function replaceImageLinks(responseText) {
                 }
                 .chat.user {
                   font-weight: bold;
+                  justify-content: right;
+                  text-align:right;
                }
                 .typing-controls {
                   display: flex;
@@ -903,6 +969,35 @@ function replaceImageLinks(responseText) {
                 }
                   </style>
 <script language="javascript">
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Assuming xinput is the div with class 'chat incoming'
+    var chatIncoming = document.querySelector('.chat.incoming')
+    if(chatIncoming) {
+        // Extract the 'More' section
+        var moreSection = chatIncoming.innerHTML.split('More:<br>')[1];
+        if(moreSection) {
+            // Split the section into individual suggestions
+            var suggestions = moreSection.split('<br>');
+            suggestions.forEach(function(suggestion, index) {
+                // Create a span element for each suggestion
+                var suggestionSpan = document.createElement('span');
+                suggestionSpan.innerHTML = suggestion;
+                suggestionSpan.style.cursor = 'pointer'; // Optional: for better UX
+                suggestionSpan.addEventListener('click', function() {
+                    setInputAndSubmit(this.textContent);
+                });
+
+                // Replace the original text with the clickable span
+                chatIncoming.innerHTML = chatIncoming.innerHTML.replace(suggestion, suggestionSpan.outerHTML);
+            });
+        }
+    }
+});
+
+
+
+
   function curlToFetch(curlCommand) {
     const fetchOptions = {};
   
